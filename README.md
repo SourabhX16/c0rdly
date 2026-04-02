@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# c0rdly
 
-## Getting Started
+> Multi-tenant SaaS platform for Indian printing presses to manage school report card generation and bulk PDF printing.
 
-First, run the development server:
+## Features
+
+- **Bulk CSV Upload** — Upload hundreds of students at once with auto-validation
+- **Pixel-Perfect PDFs** — Generate CBSE & State Board report cards matching physical print layouts
+- **Dynamic Subjects** — Subjects auto-adjust per class, stored as flexible JSONB
+- **School Isolation** — Row-Level Security ensures each school sees only their data
+- **Multi-School Admin** — Printing press admin dashboard to manage all schools and batch-generate PDFs
+- **Excel Export** — Download student data as structured spreadsheets
+- **Session Management** — Switch between academic years (2024-25, 2025-26)
+- **School Branding** — Upload school logos that appear on PDF report cards
+- **Student Photos** — Upload and display student photos in report cards
+- **Rate Limiting** — Protection against bulk upload abuse
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 16 (App Router, RSC, TypeScript) |
+| Backend | Supabase (Auth, Postgres + RLS, Storage) |
+| Styling | Tailwind CSS v4 (`@theme` tokens) |
+| PDF Engine | `@react-pdf/renderer` |
+| CSV Parsing | `papaparse` |
+| Excel Export | `xlsx` |
+| ZIP/Download | `jszip` + `file-saver` |
+| Icons | `lucide-react` |
+| Deployment | Vercel + Supabase (Free Tier) |
+
+## Quick Start
+
+```bash
+# 1. Clone & install
+git clone https://github.com/SourabhX16/c0rdly.git
+cd c0rdly
+npm install
+
+# 2. Set up environment
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
+```
+
+### Supabase Setup
+
+1. Create a project at [supabase.com](https://supabase.com)
+2. Go to **Settings → API** and copy your **Project URL** and **anon public** key
+3. Paste them into `.env.local`
+4. Go to **SQL Editor**, paste the contents of `supabase/schema.sql`, and run it
+
+### Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Create Admin User
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Sign up via the app (creates a `school` role by default)
+2. In Supabase SQL Editor, run:
+   ```sql
+   UPDATE profiles SET role = 'admin' WHERE contact_email = 'your@email.com';
+   ```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+c0rdly/
+├── app/
+│   ├── page.tsx              # Landing page
+│   ├── login/                # Auth (login/signup)
+│   ├── dashboard/            # School portal
+│   │   ├── students/         # CRUD + bulk upload
+│   │   ├── settings/         # School profile & logo
+│   │   └── upload/           # CSV bulk upload
+│   └── admin/                # Admin portal
+│       ├── schools/          # Manage all schools
+│       └── print-jobs/       # Batch PDF generation
+├── components/
+│   ├── dashboard/            # School-facing components
+│   ├── admin/                # Admin-facing components
+│   └── pdf/                  # Report card PDF template
+├── actions/                  # Server actions (CRUD)
+├── lib/                      # Utilities, Supabase clients
+├── types/                    # TypeScript interfaces
+└── supabase/                 # Database schema + RLS policies
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **JSONB for marks** — Different subjects per class without schema changes
+- **Upsert for reports** — One report card per student per session
+- **Client-side PDF generation** — No server load; works on free tier
+- **Server Components by default** — Only `'use client'` where interactivity is needed
+- **URL-based session state** — Deep-linkable, server-accessible academic year selection
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+vercel --prod
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel project settings.
+
+## License
+
+MIT
