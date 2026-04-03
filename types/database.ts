@@ -1,14 +1,14 @@
 // ============================================================
-// c0rdly – Database Type Definitions
+// GPRS – Database Type Definitions
 // ============================================================
 
-export type UserRole = 'admin' | 'school';
+export type UserRole = 'admin';
 
 // ---------- profiles ----------
 export interface Profile {
   id: string;
   role: UserRole;
-  school_name: string | null;
+  organization_name: string | null;
   contact_email: string | null;
   phone: string | null;
   address: string | null;
@@ -16,99 +16,35 @@ export interface Profile {
   created_at: string;
 }
 
-// ---------- students ----------
-export interface Student {
+// ---------- Dynamic Forms ----------
+export type FormFieldType = 'text' | 'number' | 'select' | 'date' | 'file';
+
+export interface FormField {
   id: string;
-  school_id: string;
-  name: string;
-  scholar_no: string;
-  roll_no: string;
-  sssm_id: string | null;
-  family_id: string | null;
-  aadhar_no: string | null;
-  dob: string;
-  class: string;
-  section: string | null;
-  medium: string;
-  father_name: string;
-  mother_name: string;
-  photo_url: string | null;
+  name: string; // The key used in JSON data (e.g., 'student_name')
+  type: FormFieldType;
+  label: string;
+  required: boolean;
+  options?: string[];
+}
+
+export interface Form {
+  id: string;
+  created_by: string;
+  title: string;
+  description: string | null;
+  fields: FormField[];
+  share_url_id: string;
   created_at: string;
   updated_at: string;
 }
 
-// ---------- JSONB sub-types for report_cards ----------
-export interface SubjectMarks {
-  subject: string;
-  monthly_test: number | null;
-  half_yearly: number | null;
-  project: number | null;
-  annual: number | null;
-  total: number | null;
-  grade: string | null;
-}
-
-export interface CoScholasticEntry {
-  area: string;
-  grade: string;
-}
-
-export interface PersonalQuality {
-  quality: string;
-  grade: string;
-}
-
-export interface AttendanceData {
-  total_days: number;
-  present_days: number;
-  percentage: number;
-}
-
-// ---------- report_cards ----------
-export interface ReportCard {
+export interface FormResponse {
   id: string;
-  student_id: string;
-  school_id: string;
-  session: string;
-  scholastic_data: SubjectMarks[];
-  co_scholastic_data: CoScholasticEntry[];
-  personal_qualities: PersonalQuality[];
-  attendance: AttendanceData;
-  teacher_remarks: string | null;
-  promoted_to: string | null;
+  form_id: string;
+  org_name: string;
+  data: Record<string, any>;
+  raw_file_path: string | null;
+  status: string; // e.g., 'Received', 'In Progress', 'Done'
   created_at: string;
-  updated_at: string;
-}
-
-// ---------- Joined views ----------
-export interface StudentWithReport extends Student {
-  report_cards: ReportCard[];
-  school?: Profile;
-}
-
-// ---------- Form input types ----------
-export interface StudentFormData {
-  name: string;
-  scholar_no: string;
-  roll_no: string;
-  sssm_id?: string;
-  family_id?: string;
-  aadhar_no?: string;
-  dob: string;
-  class: string;
-  section?: string;
-  medium: string;
-  father_name: string;
-  mother_name: string;
-  photo_url?: string;
-}
-
-export interface ReportCardFormData {
-  session: string;
-  scholastic_data: SubjectMarks[];
-  co_scholastic_data: CoScholasticEntry[];
-  personal_qualities: PersonalQuality[];
-  attendance: AttendanceData;
-  teacher_remarks?: string;
-  promoted_to?: string;
 }

@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'c0rdly – School Report Card Printing Platform',
+  title: 'GPRS – Grand Printing Reliable Solutions',
   description:
-    'Bulk report card generation and printing management for Indian schools. CBSE / State Board compatible.',
-  keywords: ['report card', 'school', 'printing', 'CBSE', 'India', 'bulk PDF'],
+    'Professional printing and digital data collection for institutions. Marksheets, ID Cards, and bulk document processing.',
+  keywords: ['printing press', 'marksheet', 'data collection', 'GPRS', 'India', 'bulk printing'],
 };
 
 export default function RootLayout({

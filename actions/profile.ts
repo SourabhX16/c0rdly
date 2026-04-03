@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
 export async function updateProfile(data: {
-  school_name?: string;
+  organization_name?: string;
   contact_email?: string;
   phone?: string;
   address?: string;
@@ -16,7 +16,7 @@ export async function updateProfile(data: {
   const { error } = await supabase
     .from('profiles')
     .update({
-      school_name: data.school_name || null,
+      organization_name: data.organization_name || null,
       contact_email: data.contact_email || null,
       phone: data.phone || null,
       address: data.address || null,
@@ -24,7 +24,7 @@ export async function updateProfile(data: {
     .eq('id', user.id);
 
   if (error) throw new Error(error.message);
-  revalidatePath('/dashboard');
+  revalidatePath('/admin');
 }
 
 export async function updateLogoUrl(logoUrl: string) {
@@ -38,5 +38,5 @@ export async function updateLogoUrl(logoUrl: string) {
     .eq('id', user.id);
 
   if (error) throw new Error(error.message);
-  revalidatePath('/dashboard');
+  revalidatePath('/admin');
 }

@@ -3,15 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Suspense, useState } from 'react';
-import { LayoutDashboard, School, Printer, LogOut, Menu, X, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { LayoutDashboard, Printer, LogOut, Menu, X, ChevronRight } from 'lucide-react';
 import { signOut } from '@/actions/auth';
-import SessionSelector from '@/components/SessionSelector';
 
 const navItems = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
-  { href: '/admin/schools', label: 'Schools', icon: School },
-  { href: '/admin/print-jobs', label: 'Print Jobs', icon: Printer },
+  { href: '/admin/forms', label: 'Data Request Forms', icon: Printer }, 
 ];
 
 export default function AdminSidebar() {
@@ -28,7 +26,7 @@ export default function AdminSidebar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-500">
             <Printer className="h-4 w-4 text-white" />
           </div>
-          <span className="text-sm font-bold text-white">c0rdly Admin</span>
+          <span className="text-sm font-bold text-white tracking-tight">GPRS Admin</span>
         </div>
         <button onClick={() => setOpen(!open)} className="text-surface-300">
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -46,8 +44,8 @@ export default function AdminSidebar() {
             <Printer className="h-5 w-5 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white">c0rdly</p>
-            <p className="text-xs text-surface-400">Admin Panel</p>
+            <p className="text-sm font-bold text-white tracking-tight">GPRS</p>
+            <p className="text-xs text-surface-400">Press Admin Panel</p>
           </div>
         </div>
 
@@ -67,13 +65,7 @@ export default function AdminSidebar() {
           ))}
         </nav>
 
-        {/* Session Selector */}
-        <div className="border-t border-surface-800 px-4 py-3">
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-surface-500">Academic Session</p>
-          <Suspense fallback={<div className="h-8 skeleton" />}>
-            <SessionSelector />
-          </Suspense>
-        </div>
+
 
         <div className="border-t border-surface-800 p-3">
           <button onClick={() => signOut()}
