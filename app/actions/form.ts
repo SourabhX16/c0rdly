@@ -170,6 +170,22 @@ export async function getFormOrganizationsAction(formId: string) {
   return Array.from(orgMap.values()).sort((a, b) => new Date(b.last_submission).getTime() - new Date(a.last_submission).getTime());
 }
 
+export async function getAllFormResponsesForExport(formId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('form_responses')
+    .select('*')
+    .eq('form_id', formId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Fetch all form responses error:', error);
+    return [];
+  }
+
+  return data as FormResponse[];
+}
+
 export async function getOrganizationResponsesAction(formId: string, orgName: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
