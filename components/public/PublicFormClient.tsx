@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Form } from '@/types/database';
 import { submitFormResponseAction } from '@/app/actions/form';
+import { createSubmissionSchema } from '@/lib/validation';
 import { CheckCircle, UploadCloud, Edit3 } from 'lucide-react';
 import BulkUploadClient from './BulkUploadClient';
 
@@ -10,22 +11,28 @@ export default function PublicFormClient({ form }: { form: Form }) {
   const [orgName, setOrgName] = useState('');
   const [mode, setMode] = useState<'manual' | 'bulk' | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleManualSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
     if (!orgName.trim()) {
-      alert('Organization name is required');
+      setErrors({ orgName: 'Organization name is required' });
       return;
     }
     
-    // Check required fields
-    for (const field of form.fields) {
-      if (field.required && !formData[field.id]) {
-        alert(`Field "${field.label}" is required.`);
-        return;
+    const schema = createSubmissionSchema(form.fields);
+    const result = schema.safeParse(formData);
+    
+    if (!result.success) {
+      const extractedErrors: Record<string, string> = {};
+      for (const err of result.error.issues) {
+        extractedErrors[err.path[0] as string] = err.message;
       }
+      setErrors(extractedErrors);
+      return;
     }
 
     try {
@@ -126,7 +133,10 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     required={field.required}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
                     value={formData[field.id] || ''}
-                    onChange={(e) => setFormData({...formData, [field.id]: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, [field.id]: e.target.value});
+                      if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                    }}
                   />
                 )}
                 {field.type === 'number' && (
@@ -135,7 +145,10 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     required={field.required}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
                     value={formData[field.id] || ''}
-                    onChange={(e) => setFormData({...formData, [field.id]: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, [field.id]: e.target.value});
+                      if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                    }}
                   />
                 )}
                 {field.type === 'date' && (
@@ -144,7 +157,10 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     required={field.required}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
                     value={formData[field.id] || ''}
-                    onChange={(e) => setFormData({...formData, [field.id]: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, [field.id]: e.target.value});
+                      if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                    }}
                   />
                 )}
                 {field.type === 'select' && (
@@ -152,7 +168,10 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     required={field.required}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white"
                     value={formData[field.id] || ''}
-                    onChange={(e) => setFormData({...formData, [field.id]: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, [field.id]: e.target.value});
+                      if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                    }}
                   >
                     <option value="">Select an option...</option>
                     {field.options?.map((opt, i) => (
@@ -166,14 +185,14 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     required={field.required}
                     className="w-full border border-gray-300 rounded-xl px-4 py-2.5 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     onChange={(e) => {
-                      // We would handle file upload to storage here, and set the URL/path in formData
-                      // For now, we will just store file name
                       if (e.target.files && e.target.files[0]) {
                         setFormData({...formData, [field.id]: e.target.files[0].name});
+                        if (errors[field.id]) setErrors({...errors, [field.id]: ''});
                       }
                     }}
                   />
                 )}
+                {errors[field.id] && <p className="text-red-500 text-xs mt-1">{errors[field.id]}</p>}
               </div>
             ))}
 

@@ -48,3 +48,27 @@ export interface FormResponse {
   status: string; // e.g., 'Received', 'In Progress', 'Done'
   created_at: string;
 }
+
+// ---------- Audit Logs ----------
+export interface AuditLog {
+  id: string;
+  admin_id: string | null;
+  action: string;
+  target_type: string;
+  target_id: string;
+  details: Record<string, any> | null;
+  created_at: string;
+}
+
+// ---------- Organizations ----------
+export interface Organization {
+  id: string;
+  name: string;
+  contact_email: string | null;
+  phone: string | null;
+  address: string | null;
+  logo_url: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}

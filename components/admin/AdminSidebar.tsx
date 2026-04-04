@@ -4,12 +4,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { LayoutDashboard, Printer, LogOut, Menu, X, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Printer, LogOut, Menu, X, ChevronRight, ClipboardList, FileSearch, Building2 } from 'lucide-react';
 import { signOut } from '@/actions/auth';
 
 const navItems = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
-  { href: '/admin/forms', label: 'Data Request Forms', icon: Printer }, 
+  { href: '/admin/forms', label: 'Data Request Forms', icon: Printer },
+  { href: '/admin/submissions', label: 'Submissions', icon: ClipboardList },
+  { href: '/admin/organizations', label: 'Organizations', icon: Building2 },
+  { href: '/admin/audit', label: 'Audit Log', icon: FileSearch },
 ];
 
 export default function AdminSidebar() {

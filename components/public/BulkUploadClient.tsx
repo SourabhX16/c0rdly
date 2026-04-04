@@ -7,6 +7,7 @@ import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { UploadCloud, FileSpreadsheet, ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import levenshtein from 'fast-levenshtein';
+import { validateRowData } from '@/lib/validation';
 
 export default function BulkUploadClient({ 
   form, 
@@ -28,6 +29,7 @@ export default function BulkUploadClient({
   const [showMapping, setShowMapping] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{ row: number, field: string, message: string }[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +129,7 @@ export default function BulkUploadClient({
     setShowMapping(true);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (validRowsOnly = false) => {
     if (parsedData.length === 0) return;
 
     // Validate required mappings
@@ -140,9 +142,10 @@ export default function BulkUploadClient({
     try {
       setIsSubmitting(true);
       setError(null);
+      setValidationErrors(null);
 
       // Transform raw data into the final format expected by DB
-      const formattedRows = parsedData.map(row => {
+      const formattedRows = parsedData.map((row, index) => {
         const newRow: Record<string, any> = {};
         form.fields.forEach(field => {
           const mappedHeader = mapping[field.id];
@@ -152,11 +155,44 @@ export default function BulkUploadClient({
             newRow[field.id] = null;
           }
         });
-        return newRow;
+        return { row: newRow, index };
       });
 
+      // Validate each row
+      const allErrors: { row: number, field: string, message: string }[] = [];
+      const validRows: Record<string, any>[] = [];
+
+      for (const { row, index } of formattedRows) {
+        const result = validateRowData(row, form.fields);
+        if (!result.success) {
+          for (const err of result.error.issues) {
+            allErrors.push({
+              row: index + 1,
+              field: err.path[0] as string,
+              message: err.message,
+            });
+          }
+        } else {
+          validRows.push(row);
+        }
+      }
+
+      if (allErrors.length > 0 && !validRowsOnly) {
+        setValidationErrors(allErrors);
+        setIsSubmitting(false);
+        return;
+      }
+
+      const rowsToSubmit = validRowsOnly ? validRows : formattedRows.map(r => r.row);
+
+      if (rowsToSubmit.length === 0) {
+        setError('No valid rows to submit. Please fix the errors and try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
       // Submit via Server Action
-      await submitBulkFormResponsesAction(form.id, orgName, formattedRows);
+      await submitBulkFormResponsesAction(form.id, orgName, rowsToSubmit);
       
       onSuccess();
     } catch (err: any) {
@@ -258,8 +294,50 @@ export default function BulkUploadClient({
             </div>
           </div>
 
+          {validationErrors && (
+            <div className="bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+              <div className="bg-red-100 px-4 py-3 border-b border-red-200">
+                <h4 className="font-semibold text-red-800 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  Validation Errors ({validationErrors.length} issues)
+                </h4>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-red-50">
+                    <tr>
+                      <th className="text-left px-4 py-2 font-medium text-red-700">Row</th>
+                      <th className="text-left px-4 py-2 font-medium text-red-700">Field</th>
+                      <th className="text-left px-4 py-2 font-medium text-red-700">Error</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-red-100">
+                    {validationErrors.map((err, i) => (
+                      <tr key={i} className="text-red-700">
+                        <td className="px-4 py-2">Row {err.row}</td>
+                        <td className="px-4 py-2">{err.field}</td>
+                        <td className="px-4 py-2">{err.message}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {validationErrors && (
+            <button 
+              onClick={() => handleSubmit(true)}
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-semibold py-3 rounded-xl shadow-sm transition"
+            >
+              <Check className="w-5 h-5" />
+              Submit Valid Rows Only
+            </button>
+          )}
+
           <button 
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(false)}
             disabled={isSubmitting}
             className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-3 rounded-xl shadow-sm transition"
           >

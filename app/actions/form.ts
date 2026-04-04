@@ -3,6 +3,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { Form, FormField, FormResponse } from '@/types/database';
+import { logAuditAction } from '@/lib/audit';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function createFormAction(data: { title: string; description: string; fields: FormField[] }) {
   const supabase = await createClient();
@@ -28,6 +30,8 @@ export async function createFormAction(data: { title: string; description: strin
     console.error('Create form error:', error);
     throw new Error('Failed to create form');
   }
+
+  await logAuditAction('form_created', 'form', newForm.id, { title: data.title, fields_count: data.fields.length });
 
   revalidatePath('/admin/forms');
   return newForm;
@@ -66,20 +70,12 @@ export async function getFormByShareIdAction(shareUrlId: string) {
 }
 
 export async function submitFormResponseAction(formId: string, orgName: string, data: Record<string, any>) {
-  // Using a service role client or allowing anonymous insert would be needed here. 
-  // Since we don't have the service role key immediately available in client,
-  // we can use the regular createClient. Wait, we restricted insert!
-  // Let's use the service role key to bypass RLS for submissions.
-  // Wait, Next.js action `createClient` uses the RLS of the current user.
-  // Since clients don't have accounts, RLS will block them.
-  // Let's create an admin action client or just allow anonymous inserts to `form_responses` in RLS.
-  // Let's allow anonymous inserts in RLS for form_responses where form_id = X.
-  
-  // For now, we will just use regular client, but we might need to fix RLS in schema.sql.
+  const limitResult = checkRateLimit('form_submit');
+  if (!limitResult.allowed) {
+    throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(limitResult.retryAfterMs / 1000)}s`);
+  }
+
   const supabase = await createClient();
-  
-  // Actually, Server Actions can use the Service Role key if configured, but let's provide a better way: 
-  // we should just add a policy to allow inserts. I'll need to add that later.
   
   const { error } = await supabase
     .from('form_responses')
@@ -114,6 +110,11 @@ export async function getFormResponsesAction(formId: string) {
 }
 
 export async function submitBulkFormResponsesAction(formId: string, orgName: string, rows: Record<string, any>[]) {
+  const limitResult = checkRateLimit('bulk_upload');
+  if (!limitResult.allowed) {
+    throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(limitResult.retryAfterMs / 1000)}s`);
+  }
+
   const supabase = await createClient();
   
   // Format the rows for insertion
