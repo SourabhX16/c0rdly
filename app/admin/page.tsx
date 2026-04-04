@@ -8,9 +8,18 @@ export default async function AdminDashboard() {
   const forms = await getForms();
   const submissions = await getSubmissions();
 
+  const statusCounts = submissions.reduce((acc, sub: any) => {
+    const status = sub.status || 'Received';
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   const stats = [
     { label: 'Total Forms', value: forms.length, icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
     { label: 'Total Submissions', value: submissions.length, icon: Inbox, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Received', value: statusCounts['Received'] || 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'In Progress', value: statusCounts['In Progress'] || 0, icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Done', value: statusCounts['Done'] || 0, icon: Clock, color: 'text-green-600', bg: 'bg-green-50' },
   ];
 
   return (
@@ -97,7 +106,7 @@ export default async function AdminDashboard() {
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                        <Link 
-                        href={`/admin/forms/${form.id}`}
+                        href={`/admin/forms/${form.id}/edit`}
                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                         title="Edit Form"
                       >

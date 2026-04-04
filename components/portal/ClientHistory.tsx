@@ -16,14 +16,16 @@ export default function ClientHistory({ formIds }: { formIds: string[] }) {
 
     setIsLoading(true);
     try {
-      // In a real app we'd fetch for ALL forms, but for this portal session, 
-      // we'll just show what matches the org name across all available forms.
-      const results = [];
-      for (const formId of formIds) {
-        const res = await getOrganizationResponsesAction(formId, orgName.trim());
-        results.push(...res);
-      }
-      setSubmissions(results.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const { data, error } = await supabase
+        .from('form_responses')
+        .select('*')
+        .eq('org_name', orgName.trim())
+        .in('form_id', formIds)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setSubmissions(data as FormResponse[]);
     } catch (err) {
       console.error(err);
     } finally {

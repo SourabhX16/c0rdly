@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { Form } from '@/types/database';
-import { FileText, ArrowRight, Printer, Sparkles } from 'lucide-react';
+import { FileText, ArrowRight, Printer, Sparkles, UploadCloud, Edit3, Search } from 'lucide-react';
 import Link from 'next/link';
 import ClientHistory from '@/components/portal/ClientHistory';
 
@@ -29,6 +29,27 @@ export default async function PortalPage() {
           </p>
         </div>
       </div>
+
+      <section className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-sm">
+        <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-6">How It Works</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 font-black text-sm">1</div>
+            <h3 className="font-bold text-slate-900">Enter Your Organization Name</h3>
+            <p className="text-sm text-slate-500 font-medium leading-relaxed">Type your institution name exactly as it was registered. Autocomplete will suggest matches if you have submitted before.</p>
+          </div>
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 font-black text-sm">2</div>
+            <h3 className="font-bold text-slate-900">Choose a Form Type</h3>
+            <p className="text-sm text-slate-500 font-medium leading-relaxed">Select the data request you need to fulfill from the active forms below. Each form collects different types of institutional records.</p>
+          </div>
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 font-black text-sm">3</div>
+            <h3 className="font-bold text-slate-900">Upload or Fill Manually</h3>
+            <p className="text-sm text-slate-500 font-medium leading-relaxed">Upload a CSV/Excel file for bulk data or fill the form entry by entry. Track your submissions using your organization name.</p>
+          </div>
+        </div>
+      </section>
 
       <section>
         <div className="flex items-center gap-3 mb-8 px-2">

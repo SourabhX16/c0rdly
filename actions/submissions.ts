@@ -108,3 +108,17 @@ export async function getUniqueOrgs() {
   const orgs = [...new Set((data || []).map((d: any) => d.org_name))].filter(Boolean).sort();
   return orgs as string[];
 }
+
+export async function searchOrganizations(query: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('form_responses')
+    .select('org_name')
+    .ilike('org_name', `%${query}%`)
+    .limit(10);
+
+  if (error) throw new Error(error.message);
+
+  const orgs = [...new Set((data || []).map((d: any) => d.org_name))].filter(Boolean);
+  return orgs as string[];
+}

@@ -5,7 +5,7 @@ import { Form, FormField } from '@/types/database';
 import { submitBulkFormResponsesAction } from '@/app/actions/form';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-import { UploadCloud, FileSpreadsheet, ArrowLeft, Check, AlertCircle } from 'lucide-react';
+import { UploadCloud, FileSpreadsheet, ArrowLeft, Check, AlertCircle, Download } from 'lucide-react';
 import levenshtein from 'fast-levenshtein';
 import { validateRowData } from '@/lib/validation';
 
@@ -81,6 +81,18 @@ export default function BulkUploadClient({
     } else {
       setError("Unsupported file format. Please upload a .csv or .xlsx file.");
     }
+  };
+
+  const downloadTemplate = () => {
+    const headers = form.fields.map(f => f.label);
+    const csv = Papa.unparse([headers]);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${form.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_template.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
   const setupMapping = (headers: string[], data: any[]) => {
     setParsedHeaders(headers);
@@ -206,13 +218,22 @@ export default function BulkUploadClient({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Bulk Upload</h3>
-        <button 
-          type="button" 
-          onClick={onCancel}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition"
-        >
-          <ArrowLeft className="w-4 h-4" /> Cancel
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={downloadTemplate}
+            className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition"
+          >
+            <Download className="w-4 h-4" />
+            Download CSV Template
+          </button>
+          <button 
+            type="button" 
+            onClick={onCancel}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Cancel
+          </button>
+        </div>
       </div>
 
       {error && (

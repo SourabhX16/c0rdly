@@ -24,6 +24,7 @@ import {
 import Papa from 'papaparse';
 import { updateSubmissionStatus, deleteSubmission } from '@/actions/submissions';
 import { Form, FormResponse } from '@/types/database';
+import Link from 'next/link';
 
 interface SubmissionsTableProps {
   initialSubmissions: FormResponse[];
@@ -411,9 +412,20 @@ export default function SubmissionsTable({
                           <div className="bg-white p-2 rounded-xl border border-slate-100 shadow-sm">
                             <Building2 className="w-4 h-4 text-indigo-500" />
                           </div>
-                          <span className="font-bold text-slate-900">
-                            {sub.org_name}
-                          </span>
+                          <div>
+                            <span className="font-bold text-slate-900">
+                              {sub.org_name}
+                            </span>
+                            {form && (
+                              <Link
+                                href={`/admin/forms/${form.id}/${encodeURIComponent(sub.org_name)}`}
+                                className="block text-[10px] text-indigo-500 hover:text-indigo-700 font-medium transition"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                View all responses →
+                              </Link>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">

@@ -63,7 +63,10 @@ export default async function AdminFormsPage() {
                   <button 
                     className="text-blue-600 hover:text-blue-800 shrink-0"
                     title="Copy share link"
-                    // Add copy logic later
+                    onClick={async () => {
+                      const url = `${window.location.origin}/f/${form.share_url_id}`;
+                      await navigator.clipboard.writeText(url);
+                    }}
                   >
                     <LinkIcon className="w-4 h-4" />
                   </button>
@@ -79,6 +82,13 @@ export default async function AdminFormsPage() {
                   Responses
                 </Link>
                 <div className="flex gap-4">
+                  <Link
+                    href={`/admin/forms/${form.id}/edit`}
+                    className="text-gray-500 hover:text-gray-900 transition"
+                    title="Edit Form"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Link>
                   <Link
                     href={`/f/${form.share_url_id}`}
                     target="_blank"

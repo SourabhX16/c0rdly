@@ -1,19 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Form } from '@/types/database';
 import { submitFormResponseAction } from '@/app/actions/form';
+import { searchOrganizations } from '@/actions/submissions';
 import { createSubmissionSchema } from '@/lib/validation';
-import { CheckCircle, UploadCloud, Edit3 } from 'lucide-react';
+import { CheckCircle, UploadCloud, Edit3, Download } from 'lucide-react';
 import BulkUploadClient from './BulkUploadClient';
+import Papa from 'papaparse';
 
 export default function PublicFormClient({ form }: { form: Form }) {
   const [orgName, setOrgName] = useState('');
+  const [orgSuggestions, setOrgSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [mode, setMode] = useState<'manual' | 'bulk' | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const orgInputRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (orgInputRef.current && !orgInputRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (orgName.trim().length >= 2) {
+        try {
+          const results = await searchOrganizations(orgName.trim());
+          setOrgSuggestions(results);
+          setShowSuggestions(true);
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        setOrgSuggestions([]);
+        setShowSuggestions(false);
+      }
+    };
+
+    const debounce = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(debounce);
+  }, [orgName]);
 
   const handleManualSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +110,7 @@ export default function PublicFormClient({ form }: { form: Form }) {
       </div>
 
       <div className="p-8">
-        <div className="mb-8">
+        <div className="mb-8 relative" ref={orgInputRef}>
           <label className="block text-sm font-semibold text-gray-800 mb-2">
             Organization Name <span className="text-red-500">*</span>
           </label>
@@ -85,8 +120,27 @@ export default function PublicFormClient({ form }: { form: Form }) {
             placeholder="e.g. Acme Corp"
             value={orgName}
             onChange={(e) => setOrgName(e.target.value)}
+            onFocus={() => orgSuggestions.length > 0 && setShowSuggestions(true)}
             className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none"
           />
+          {showSuggestions && orgSuggestions.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+              {orgSuggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setOrgName(suggestion);
+                    setShowSuggestions(false);
+                  }}
+                  className="w-full text-left px-4 py-2.5 hover:bg-blue-50 transition text-sm font-medium text-gray-700 hover:text-blue-600"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+          <p className="text-xs text-gray-500 mt-1">Start typing to see existing organizations</p>
         </div>
 
         {!mode ? (

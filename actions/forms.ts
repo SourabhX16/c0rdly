@@ -42,27 +42,19 @@ export async function saveForm(formData: { title: string; description: string; f
       .eq('id', id);
     if (error) throw new Error(error.message);
     await logAuditAction('form_updated', 'form', id, { title, fields_count: fields.length });
+    revalidatePath('/admin');
+    return id;
   } else {
-    const { error } = await supabase
+    const { data: createdForm, error } = await supabase
       .from('forms')
-      .insert({ title, description, fields, created_by: user.id });
-    if (error) throw new Error(error.message);
-    const { data: createdForm } = await supabase
-      .from('forms')
+      .insert({ title, description, fields, created_by: user.id })
       .select('id')
-      .eq('title', title)
-      .eq('created_by', user.id)
-      .order('created_at', { ascending: false })
       .single();
-    const newId = createdForm?.id;
-    if (newId) {
-      await logAuditAction('form_created', 'form', newId, { title, fields_count: fields.length });
-    }
-    return newId;
+    if (error) throw new Error(error.message);
+    await logAuditAction('form_created', 'form', createdForm.id, { title, fields_count: fields.length });
+    revalidatePath('/admin');
+    return createdForm.id;
   }
-
-  revalidatePath('/admin');
-  return id;
 }
 
 export async function deleteForm(id: string) {

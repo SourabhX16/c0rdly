@@ -1,6 +1,8 @@
 // ============================================================
 // Simple in-memory rate limiter for server actions
 // Uses a sliding-window approach per key (e.g., user ID)
+// WARNING: This resets on Vercel cold starts. For production,
+// replace with Supabase-based counter or Redis.
 // ============================================================
 
 const store = new Map<string, number[]>();

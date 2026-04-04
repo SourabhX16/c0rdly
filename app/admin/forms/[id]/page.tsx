@@ -1,25 +1,21 @@
 import { getFormById } from '@/actions/forms';
-import FormBuilder from '@/components/admin/FormBuilder';
+import { getFormOrganizationsAction } from '@/app/actions/form';
 import { notFound } from 'next/navigation';
+import FormResponsesClient from './FormResponsesClient';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function FormEditorPage({ params }: PageProps) {
+export default async function FormResponsesPage({ params }: PageProps) {
   const { id } = await params;
   
-  let initialData = null;
-  if (id !== 'new') {
-    initialData = await getFormById(id);
-    if (!initialData) {
-      return notFound();
-    }
+  const form = await getFormById(id);
+  if (!form) {
+    return notFound();
   }
 
-  return (
-    <div className="py-8">
-      <FormBuilder initialData={initialData} />
-    </div>
-  );
+  const organizations = await getFormOrganizationsAction(form.id);
+
+  return <FormResponsesClient form={form} organizations={organizations} />;
 }

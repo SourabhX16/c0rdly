@@ -31,12 +31,12 @@ export function createSubmissionSchema(fields: FormField[]) {
         fieldSchema = z.enum(field.options as [string, ...string[]]);
         break;
       case 'date':
-        fieldSchema = z.iso.date();
+        fieldSchema = z.string().min(1, `${field.label} is required`);
         break;
       default:
         fieldSchema = z.string().min(1, `${field.label} is required`);
     }
-    shape[field.name] = field.required ? fieldSchema : fieldSchema.optional();
+    shape[field.id] = field.required ? fieldSchema : fieldSchema.optional();
   }
   return z.object(shape);
 }
