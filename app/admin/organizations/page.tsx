@@ -7,8 +7,8 @@ export default async function OrganizationsPage() {
   return (
     <div className="py-8 space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Organizations</h1>
-        <p className="mt-2 text-sm text-slate-500 font-medium">Manage registered organizations and their contact details.</p>
+        <h1 className="font-display text-3xl font-bold text-slate-white tracking-tight">Organizations</h1>
+        <p className="mt-2 text-sm text-frost-gray font-medium">Manage registered organizations and their contact details.</p>
       </div>
 
       <OrganizationManager organizations={organizations} />

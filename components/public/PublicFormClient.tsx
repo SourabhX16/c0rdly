@@ -57,10 +57,10 @@ export default function PublicFormClient({ form }: { form: Form }) {
       setErrors({ orgName: 'Organization name is required' });
       return;
     }
-    
+
     const schema = createSubmissionSchema(form.fields);
     const result = schema.safeParse(formData);
-    
+
     if (!result.success) {
       const extractedErrors: Record<string, string> = {};
       for (const err of result.error.issues) {
@@ -81,18 +81,23 @@ export default function PublicFormClient({ form }: { form: Form }) {
     }
   };
 
+  const inputClasses = "input-dark w-full px-4 py-3";
+  const selectClasses = "input-dark w-full px-4 py-3 appearance-none";
+
   if (success) {
     return (
-      <div className="bg-white rounded-2xl shadow p-8 text-center border border-gray-100">
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank you!</h2>
-        <p className="text-gray-500">Your data has been successfully submitted.</p>
-        <button 
+      <div className="glass-card-elevated p-10 text-center animate-crystallize">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mx-auto mb-5">
+          <CheckCircle className="w-8 h-8 text-emerald-400" strokeWidth={1.5} />
+        </div>
+        <h2 className="font-display text-2xl font-bold text-slate-white mb-2">Thank you!</h2>
+        <p className="text-frost-gray leading-relaxed">Your data has been successfully submitted.</p>
+        <button
           onClick={() => {
             setSuccess(false);
             setFormData({});
           }}
-          className="mt-6 text-blue-600 font-medium hover:underline"
+          className="mt-6 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors duration-150"
         >
           Submit another response
         </button>
@@ -101,30 +106,24 @@ export default function PublicFormClient({ form }: { form: Form }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-8 border-b border-gray-100 bg-gray-50/50">
-        <h1 className="text-3xl font-bold text-gray-900">{form.title}</h1>
-        {form.description && (
-          <p className="text-gray-600 mt-2">{form.description}</p>
-        )}
-      </div>
-
+    <div className="glass-card-floating overflow-hidden">
       <div className="p-8">
+        {/* Organization Name Input */}
         <div className="mb-8 relative" ref={orgInputRef}>
-          <label className="block text-sm font-semibold text-gray-800 mb-2">
-            Organization Name <span className="text-red-500">*</span>
+          <label className="block text-sm font-semibold text-slate-white mb-2">
+            Organization Name <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             required
-            placeholder="e.g. Acme Corp"
+            placeholder="e.g. Delhi Public School, Raipur"
             value={orgName}
             onChange={(e) => setOrgName(e.target.value)}
             onFocus={() => orgSuggestions.length > 0 && setShowSuggestions(true)}
-            className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none"
+            className={inputClasses}
           />
           {showSuggestions && orgSuggestions.length > 0 && (
-            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-50 w-full mt-1 glass-card border border-white/[0.06] shadow-xl max-h-60 overflow-y-auto">
               {orgSuggestions.map((suggestion, idx) => (
                 <button
                   key={idx}
@@ -133,59 +132,65 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     setOrgName(suggestion);
                     setShowSuggestions(false);
                   }}
-                  className="w-full text-left px-4 py-2.5 hover:bg-blue-50 transition text-sm font-medium text-gray-700 hover:text-blue-600"
+                  className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition-colors duration-150 text-sm font-medium text-frost-gray hover:text-indigo-400"
                 >
                   {suggestion}
                 </button>
               ))}
             </div>
           )}
-          <p className="text-xs text-gray-500 mt-1">Start typing to see existing organizations</p>
+          {errors.orgName && <p className="text-red-400 text-xs mt-1">{errors.orgName}</p>}
+          <p className="text-xs text-dim-steel mt-1.5">Start typing to see existing organizations</p>
         </div>
 
+        {/* Mode Selector */}
         {!mode ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button 
+            <button
               onClick={() => setMode('manual')}
-              className="flex flex-col items-center justify-center p-8 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:bg-blue-50 transition-all text-gray-700"
+              className="flex flex-col items-center justify-center p-8 border-2 border-white/[0.06] rounded-2xl hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-200 group bg-white/[0.02]"
             >
-              <Edit3 className="w-10 h-10 mb-3 text-blue-500" />
-              <span className="font-semibold text-lg">Manual Entry</span>
-              <span className="text-sm text-gray-500 mt-1">Fill out the form row by row</span>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-3 group-hover:bg-indigo-500/20 transition-colors duration-200">
+                <Edit3 className="w-6 h-6 text-indigo-400" strokeWidth={1.5} />
+              </div>
+              <span className="font-display font-semibold text-lg text-slate-white">Manual Entry</span>
+              <span className="text-sm text-dim-steel mt-1">Fill out the form row by row</span>
             </button>
-            <button 
+            <button
               onClick={() => setMode('bulk')}
-              className="flex flex-col items-center justify-center p-8 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:bg-blue-50 transition-all text-gray-700"
+              className="flex flex-col items-center justify-center p-8 border-2 border-white/[0.06] rounded-2xl hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-200 group bg-white/[0.02]"
             >
-              <UploadCloud className="w-10 h-10 mb-3 text-blue-500" />
-              <span className="font-semibold text-lg">Bulk Upload</span>
-              <span className="text-sm text-gray-500 mt-1">Upload a CSV or Excel file</span>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-3 group-hover:bg-indigo-500/20 transition-colors duration-200">
+                <UploadCloud className="w-6 h-6 text-indigo-400" strokeWidth={1.5} />
+              </div>
+              <span className="font-display font-semibold text-lg text-slate-white">Bulk Upload</span>
+              <span className="text-sm text-dim-steel mt-1">Upload a CSV or Excel file</span>
             </button>
           </div>
         ) : mode === 'manual' ? (
-          <form onSubmit={handleManualSubmit} className="space-y-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Manual Entry</h3>
-              <button 
-                type="button" 
+          <form onSubmit={handleManualSubmit} className="space-y-5 animate-crystallize">
+            <div className="flex items-center justify-between mb-2 pb-4 border-b border-white/[0.06]">
+              <h3 className="font-display text-lg font-semibold text-slate-white">Manual Entry</h3>
+              <button
+                type="button"
                 onClick={() => setMode(null)}
-                className="text-sm text-gray-500 hover:text-gray-900"
+                className="text-sm text-dim-steel hover:text-indigo-400 font-medium transition-colors duration-150"
               >
                 Change Method
               </button>
             </div>
 
             {form.fields.map((field) => (
-              <div key={field.id} className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  {field.label} {field.required && <span className="text-red-500">*</span>}
+              <div key={field.id} className="space-y-2">
+                <label className="block text-sm font-medium text-slate-white">
+                  {field.label} {field.required && <span className="text-red-400">*</span>}
                 </label>
-                
+
                 {field.type === 'text' && (
                   <input
                     type="text"
                     required={field.required}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className={inputClasses}
                     value={formData[field.id] || ''}
                     onChange={(e) => {
                       setFormData({...formData, [field.id]: e.target.value});
@@ -197,7 +202,7 @@ export default function PublicFormClient({ form }: { form: Form }) {
                   <input
                     type="number"
                     required={field.required}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className={inputClasses}
                     value={formData[field.id] || ''}
                     onChange={(e) => {
                       setFormData({...formData, [field.id]: e.target.value});
@@ -209,7 +214,7 @@ export default function PublicFormClient({ form }: { form: Form }) {
                   <input
                     type="date"
                     required={field.required}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                    className={inputClasses}
                     value={formData[field.id] || ''}
                     onChange={(e) => {
                       setFormData({...formData, [field.id]: e.target.value});
@@ -218,55 +223,71 @@ export default function PublicFormClient({ form }: { form: Form }) {
                   />
                 )}
                 {field.type === 'select' && (
-                  <select
-                    required={field.required}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-                    value={formData[field.id] || ''}
-                    onChange={(e) => {
-                      setFormData({...formData, [field.id]: e.target.value});
-                      if (errors[field.id]) setErrors({...errors, [field.id]: ''});
-                    }}
-                  >
-                    <option value="">Select an option...</option>
-                    {field.options?.map((opt, i) => (
-                      <option key={i} value={opt}>{opt}</option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      required={field.required}
+                      className={selectClasses}
+                      value={formData[field.id] || ''}
+                      onChange={(e) => {
+                        setFormData({...formData, [field.id]: e.target.value});
+                        if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                      }}
+                    >
+                      <option value="" className="text-dim-steel">Select an option...</option>
+                      {field.options?.map((opt, i) => (
+                        <option key={i} value={opt} className="bg-deep-abyss">{opt}</option>
+                      ))}
+                    </select>
+                  </div>
                 )}
                 {field.type === 'file' && (
-                  <input
-                    type="file"
-                    required={field.required}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setFormData({...formData, [field.id]: e.target.files[0].name});
-                        if (errors[field.id]) setErrors({...errors, [field.id]: ''});
-                      }
-                    }}
-                  />
+                  <div className="relative">
+                    <input
+                      type="file"
+                      required={field.required}
+                      className="w-full border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm bg-white/[0.02] text-frost-gray file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 transition-all cursor-pointer"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setFormData({...formData, [field.id]: e.target.files[0].name});
+                          if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                        }
+                      }}
+                    />
+                  </div>
                 )}
-                {errors[field.id] && <p className="text-red-500 text-xs mt-1">{errors[field.id]}</p>}
+                {errors[field.id] && <p className="text-red-400 text-xs mt-1">{errors[field.id]}</p>}
               </div>
             ))}
 
-            <div className="pt-4">
-              <button 
+            <div className="pt-6 mt-6 border-t border-white/[0.06]">
+              <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-sm disabled:opacity-50 transition"
+                className="btn-primary w-full py-3.5 text-base"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Entry'}
               </button>
             </div>
           </form>
         ) : (
-          <BulkUploadClient 
-            form={form} 
-            orgName={orgName} 
-            onCancel={() => setMode(null)} 
-            onSuccess={() => setSuccess(true)} 
-          />
+          <div className="animate-crystallize">
+             <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.06]">
+                <h3 className="font-display text-lg font-semibold text-slate-white">Bulk Upload</h3>
+                <button
+                  type="button"
+                  onClick={() => setMode(null)}
+                  className="text-sm text-dim-steel hover:text-indigo-400 font-medium transition-colors duration-150 flex items-center gap-1"
+                >
+                  Change Method
+                </button>
+              </div>
+            <BulkUploadClient
+              form={form}
+              orgName={orgName}
+              onCancel={() => setMode(null)}
+              onSuccess={() => setSuccess(true)}
+            />
+          </div>
         )}
       </div>
     </div>

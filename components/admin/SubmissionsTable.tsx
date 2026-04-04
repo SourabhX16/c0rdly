@@ -218,20 +218,20 @@ export default function SubmissionsTable({
   };
 
   const SortIcon = ({ field }: { field: string }) => {
-    if (sortField !== field) return <SortAsc className="w-3 h-3 opacity-30" />;
+    if (sortField !== field) return <SortAsc className="w-3 h-3 opacity-30" strokeWidth={1.5} />;
     return sortOrder === 'asc' ? (
-      <SortAsc className="w-3 h-3 text-indigo-600" />
+      <SortAsc className="w-3 h-3 text-indigo-400" strokeWidth={1.5} />
     ) : (
-      <SortDesc className="w-3 h-3 text-indigo-600" />
+      <SortDesc className="w-3 h-3 text-indigo-400" strokeWidth={1.5} />
     );
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 glass-card-elevated p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 w-full">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-indigo-600 transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
             <input
               type="text"
               placeholder="Search all fields..."
@@ -240,18 +240,18 @@ export default function SubmissionsTable({
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm outline-none font-medium"
+              className="input-dark w-full pl-11"
             />
           </div>
           <div className="relative group">
-            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-indigo-600 transition-colors" />
+            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
             <select
               value={orgFilter}
               onChange={(e) => {
                 setOrgFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm outline-none font-medium appearance-none"
+              className="input-dark w-full pl-11 appearance-none"
             >
               <option value="All">All Organizations</option>
               {orgs.map((org) => (
@@ -262,14 +262,14 @@ export default function SubmissionsTable({
             </select>
           </div>
           <div className="relative group">
-            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-indigo-600 transition-colors" />
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
             <select
               value={formFilter}
               onChange={(e) => {
                 setFormFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm outline-none font-medium appearance-none"
+              className="input-dark w-full pl-11 appearance-none"
             >
               <option value="All">All Form Types</option>
               {forms.map((f) => (
@@ -280,14 +280,14 @@ export default function SubmissionsTable({
             </select>
           </div>
           <div className="relative group">
-            <ClipboardCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-indigo-600 transition-colors" />
+            <ClipboardCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
             <select
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm outline-none font-medium appearance-none"
+              className="input-dark w-full pl-11 appearance-none"
             >
               <option value="All">All Statuses</option>
               <option value="Received">Received</option>
@@ -305,10 +305,10 @@ export default function SubmissionsTable({
                 setDateFrom(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none font-medium"
+              className="input-dark text-sm"
               placeholder="From"
             />
-            <span className="text-slate-400 text-sm">to</span>
+            <span className="text-dim-steel text-sm">to</span>
             <input
               type="date"
               value={dateTo}
@@ -323,38 +323,38 @@ export default function SubmissionsTable({
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="flex items-center gap-1 px-3 py-2 text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition"
+              className="flex items-center gap-1 px-3 py-2 text-sm text-dim-steel hover:text-slate-white hover:bg-white/5 rounded-xl transition-colors duration-150"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" strokeWidth={1.5} />
               Clear
             </button>
           )}
           <button
             onClick={exportToCSV}
-            className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl hover:bg-emerald-700 transition-all font-bold shadow-lg shadow-emerald-600/20 active:scale-95"
+            className="flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all duration-150 font-semibold shadow-lg shadow-emerald-600/20 active:scale-[0.98]"
           >
-            <Download className="w-5 h-5" />
+            <Download className="w-5 h-5" strokeWidth={1.5} />
             Export CSV
           </button>
         </div>
       </div>
 
       {hasActiveFilters && (
-        <div className="text-sm text-slate-500 font-medium">
+        <div className="text-sm text-dim-steel font-medium">
           Showing {filteredAndSorted.length} of {submissions.length} submissions
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in">
+      <div className="glass-card-elevated overflow-hidden animate-fade-in">
         <div className="overflow-x-auto text-sm">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+              <tr className="border-b border-white/[0.06]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   #
                 </th>
                 <th
-                  className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] cursor-pointer hover:text-slate-700 select-none"
+                  className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px] cursor-pointer hover:text-frost-gray select-none"
                   onClick={() => handleSort('org_name')}
                 >
                   <span className="flex items-center gap-1">
@@ -363,7 +363,7 @@ export default function SubmissionsTable({
                   </span>
                 </th>
                 <th
-                  className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] cursor-pointer hover:text-slate-700 select-none"
+                  className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px] cursor-pointer hover:text-frost-gray select-none"
                   onClick={() => handleSort('form_title')}
                 >
                   <span className="flex items-center gap-1">
@@ -372,7 +372,7 @@ export default function SubmissionsTable({
                   </span>
                 </th>
                 <th
-                  className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] cursor-pointer hover:text-slate-700 select-none"
+                  className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px] cursor-pointer hover:text-frost-gray select-none"
                   onClick={() => handleSort('created_at')}
                 >
                   <span className="flex items-center gap-1">
@@ -380,18 +380,18 @@ export default function SubmissionsTable({
                     <SortIcon field="created_at" />
                   </span>
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Entries
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Status Update
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {paginatedSubmissions.map((sub, idx) => {
                 const form = forms.find((f) => f.id === sub.form_id);
                 const isExpanded = expandedId === sub.id;
@@ -399,27 +399,27 @@ export default function SubmissionsTable({
                   <>
                     <tr
                       key={sub.id}
-                      className="hover:bg-slate-50/30 transition-colors group cursor-pointer"
+                      className="table-row-hover group cursor-pointer border-b border-white/[0.04]"
                       onClick={() =>
                         setExpandedId(isExpanded ? null : sub.id)
                       }
                     >
-                      <td className="px-6 py-4 text-slate-400 font-medium text-xs">
+                      <td className="px-6 py-4 text-dim-steel font-medium text-xs">
                         {(currentPage - 1) * pageSize + idx + 1}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="bg-white p-2 rounded-xl border border-slate-100 shadow-sm">
-                            <Building2 className="w-4 h-4 text-indigo-500" />
+                          <div className="bg-indigo-500/10 p-2 rounded-xl border border-indigo-500/10">
+                            <Building2 className="w-4 h-4 text-indigo-400" strokeWidth={1.5} />
                           </div>
                           <div>
-                            <span className="font-bold text-slate-900">
+                            <span className="font-semibold text-slate-white group-hover:text-indigo-400 transition-colors duration-150">
                               {sub.org_name}
                             </span>
                             {form && (
                               <Link
                                 href={`/admin/forms/${form.id}/${encodeURIComponent(sub.org_name)}`}
-                                className="block text-[10px] text-indigo-500 hover:text-indigo-700 font-medium transition"
+                                className="block text-[10px] text-indigo-400 hover:text-indigo-300 font-medium transition-colors duration-150"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 View all responses →
@@ -429,17 +429,17 @@ export default function SubmissionsTable({
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 font-medium">
+                        <span className="text-frost-gray font-medium">
                           {form?.title || 'Unknown Form'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-500 font-medium">
+                      <td className="px-6 py-4 text-dim-steel font-medium">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {new Date(sub.created_at).toLocaleDateString()}
+                          <Calendar className="w-3.5 h-3.5" strokeWidth={1.5} />
+                          {new Date(sub.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-bold text-indigo-600">
+                      <td className="px-6 py-4 font-semibold text-indigo-400">
                         {sub.data?.bulkEntries
                           ? `${sub.data.bulkEntries.length} Records`
                           : '1 Entry'}
@@ -453,12 +453,12 @@ export default function SubmissionsTable({
                               handleStatusChange(sub.id, e.target.value);
                             }}
                             disabled={updatingId === sub.id}
-                            className={`text-xs font-black uppercase tracking-wider rounded-xl px-4 py-2 border-0 cursor-pointer shadow-sm transition-all focus:ring-0 ${
+                            className={`text-xs font-bold uppercase tracking-wider rounded-xl px-4 py-2 border cursor-pointer transition-all duration-150 focus:ring-0 ${
                               sub.status === 'Done'
-                                ? 'bg-emerald-100 text-emerald-700'
+                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                                 : sub.status === 'In Progress'
-                                ? 'bg-amber-100 text-amber-700'
-                                : 'bg-indigo-100 text-indigo-700'
+                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
                             }`}
                           >
                             <option value="Received">Received</option>
@@ -467,7 +467,7 @@ export default function SubmissionsTable({
                           </select>
                           {updatingId === sub.id && (
                             <div className="absolute -right-8">
-                              <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+                              <Loader2 className="w-4 h-4 text-frost-gray animate-spin" />
                             </div>
                           )}
                         </div>
@@ -479,7 +479,7 @@ export default function SubmissionsTable({
                               e.stopPropagation();
                               setExpandedId(isExpanded ? null : sub.id);
                             }}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+                            className="p-2 text-dim-steel hover:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-colors duration-150"
                             title="View details"
                           >
                             {isExpanded ? (
@@ -494,7 +494,7 @@ export default function SubmissionsTable({
                               handleDelete(sub.id);
                             }}
                             disabled={deletingId === sub.id}
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+                            className="p-2 text-dim-steel hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors duration-150 disabled:opacity-40"
                             title="Delete"
                           >
                             {deletingId === sub.id ? (
@@ -507,63 +507,63 @@ export default function SubmissionsTable({
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr className="bg-slate-50/50">
+                      <tr className="bg-white/[0.02]">
                         <td colSpan={7} className="px-6 py-6">
                           <div className="space-y-4">
-                            <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+                            <h4 className="font-display font-semibold text-slate-white text-sm uppercase tracking-wide">
                               Submission Details
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Submission ID:
                                 </span>
-                                <p className="text-slate-800 font-mono text-xs mt-1">
+                                <p className="text-frost-gray font-mono text-xs mt-1">
                                   {sub.id}
                                 </p>
                               </div>
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Organization:
                                 </span>
-                                <p className="text-slate-800 font-semibold mt-1">
+                                <p className="text-slate-white font-semibold mt-1">
                                   {sub.org_name}
                                 </p>
                               </div>
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Form:
                                 </span>
-                                <p className="text-slate-800 font-semibold mt-1">
+                                <p className="text-slate-white font-semibold mt-1">
                                   {form?.title || 'Unknown'}
                                 </p>
                               </div>
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Submitted:
                                 </span>
-                                <p className="text-slate-800 font-semibold mt-1">
+                                <p className="text-slate-white font-semibold mt-1">
                                   {new Date(sub.created_at).toLocaleString()}
                                 </p>
                               </div>
                               {sub.raw_file_path && (
                                 <div>
-                                  <span className="text-slate-500 font-medium">
-                                    Uploaded File:
-                                  </span>
-                                  <p className="text-slate-800 font-mono text-xs mt-1">
-                                    {sub.raw_file_path}
+                                    <span className="text-dim-steel font-medium">
+                                      Uploaded File:
+                                    </span>
+                                    <p className="text-frost-gray font-mono text-xs mt-1">
+                                      {sub.raw_file_path}
                                   </p>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-slate-200 rounded-xl overflow-hidden">
-                              <div className="bg-white px-4 py-3 border-b border-slate-200">
-                                <h5 className="font-semibold text-slate-700 text-sm">
+                            <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+                              <div className="bg-white/[0.03] px-4 py-3 border-b border-white/[0.06]">
+                                <h5 className="font-semibold text-frost-gray text-sm">
                                   Submitted Data
                                 </h5>
                               </div>
-                              <div className="bg-white divide-y divide-slate-100">
+                              <div className="divide-y divide-white/[0.04]">
                                 {sub.data &&
                                   Object.entries(sub.data).map(
                                     ([key, value]) => (
@@ -571,10 +571,10 @@ export default function SubmissionsTable({
                                         key={key}
                                         className="grid grid-cols-3 px-4 py-2 text-sm"
                                       >
-                                        <span className="text-slate-500 font-medium capitalize">
+                                        <span className="text-dim-steel font-medium capitalize">
                                           {key.replace(/_/g, ' ')}
                                         </span>
-                                        <span className="col-span-2 text-slate-800">
+                                        <span className="col-span-2 text-slate-white">
                                           {typeof value === 'object'
                                             ? JSON.stringify(value)
                                             : String(value)}
@@ -595,7 +595,7 @@ export default function SubmissionsTable({
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-6 py-20 text-center text-slate-400 font-bold bg-slate-50/20"
+                    className="px-6 py-20 text-center text-dim-steel font-semibold"
                   >
                     No submissions found matching your filters.
                   </td>
@@ -607,15 +607,15 @@ export default function SubmissionsTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-sm text-slate-500 font-medium">
+        <div className="flex items-center justify-between glass-card px-6 py-4">
+          <p className="text-sm text-dim-steel font-medium">
             Page {currentPage} of {totalPages} ({filteredAndSorted.length} total)
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="p-2 rounded-xl border border-white/[0.06] text-dim-steel hover:bg-white/5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -634,10 +634,10 @@ export default function SubmissionsTable({
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`w-9 h-9 rounded-xl text-sm font-bold transition ${
+                  className={`w-9 h-9 rounded-xl text-sm font-semibold transition-colors duration-150 ${
                     currentPage === page
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'bg-indigo-primary text-white shadow-lg shadow-indigo-primary/20'
+                      : 'text-frost-gray hover:bg-white/5'
                   }`}
                 >
                   {page}

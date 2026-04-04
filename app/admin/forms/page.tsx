@@ -1,101 +1,124 @@
 import { getAdminFormsAction } from '@/app/actions/form';
 import Link from 'next/link';
-import { PlusCircle, Link as LinkIcon, Edit, Eye, Users } from 'lucide-react';
+import { PlusCircle, Link as LinkIcon, Edit, Eye, Users, FileText, Copy, Hash } from 'lucide-react';
+import CopyShareUrl from '@/components/admin/CopyShareUrl';
 
 export default async function AdminFormsPage() {
   const forms = await getAdminFormsAction();
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div className="animate-fade-in max-w-[1280px] mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Dynamic Forms</h1>
-          <p className="text-gray-500 mt-1">Create and manage data collection forms</p>
+          <h1 className="font-display text-2xl font-bold text-slate-white tracking-tight">
+            Data Request Forms
+          </h1>
+          <p className="mt-1.5 text-sm text-frost-gray">
+            Create and manage data collection forms for printing operations.
+          </p>
         </div>
-        <Link 
+        <Link
           href="/admin/forms/new"
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-sm font-medium"
+          className="btn-primary flex items-center gap-2 text-sm"
         >
-          <PlusCircle className="w-5 h-5" />
+          <PlusCircle className="w-4 h-4" strokeWidth={2} />
           Create Form
         </Link>
       </div>
 
+      {/* Forms Grid or Empty State */}
       {forms.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
-            <PlusCircle className="w-8 h-8 text-blue-600" />
+        <div className="glass-card-elevated flex flex-col items-center justify-center py-20 px-8">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/10 mb-5">
+            <FileText className="w-7 h-7 text-indigo-400" strokeWidth={1.5} />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">No forms created yet</h2>
-          <p className="text-gray-500 mt-2 max-w-md mx-auto mb-6">
-            Get started by creating your first dynamic form to start collecting data from organizations.
+          <h2 className="font-display text-lg font-semibold text-slate-white mb-2">
+            No forms created yet
+          </h2>
+          <p className="text-sm text-dim-steel max-w-sm text-center mb-6 leading-relaxed">
+            Get started by creating your first dynamic form to begin collecting data from organizations.
           </p>
-          <Link 
+          <Link
             href="/admin/forms/new"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition"
+            className="btn-primary flex items-center gap-2 text-sm"
           >
+            <PlusCircle className="w-4 h-4" strokeWidth={2} />
             Create Your First Form
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 stagger-children">
           {forms.map((form) => (
-            <div key={form.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden group flex flex-col">
+            <div
+              key={form.id}
+              className="crystal-card flex flex-col group"
+            >
+              {/* Card Body */}
               <div className="p-6 flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                  {form.title}
-                </h3>
-                <p className="text-gray-500 text-sm mb-4 line-clamp-2">
-                  {form.description || "No description provided."}
-                </p>
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-4 bg-gray-50 p-2 rounded-lg">
-                  <span className="font-medium px-2 py-1 bg-white rounded border border-gray-200 text-xs">
+                {/* Icon + Title */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/15 border border-indigo-500/10 group-hover:bg-indigo-500/25 transition-colors duration-200">
+                    <FileText className="h-5 w-5 text-indigo-400" strokeWidth={1.5} />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-base font-semibold text-slate-white group-hover:text-indigo-400 transition-colors duration-150 truncate">
+                      {form.title}
+                    </h3>
+                    <p className="text-sm text-dim-steel line-clamp-2 mt-1 leading-relaxed">
+                      {form.description || 'No description provided.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Metadata Chips */}
+                <div className="flex items-center gap-2 text-xs mb-4">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-white/[0.04] border border-white/[0.06] rounded-lg font-medium text-frost-gray">
+                    <Hash className="w-3 h-3" strokeWidth={1.5} />
                     {form.fields.length} Fields
                   </span>
-                  <span className="text-gray-400">&bull;</span>
-                  <span className="truncate">Created {new Date(form.created_at).toLocaleDateString()}</span>
+                  <span className="text-dim-steel">
+                    {new Date(form.created_at).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
                 </div>
-                
-                <div className="flex bg-blue-50/50 p-3 rounded-lg border border-blue-100/50 items-center justify-between">
-                  <p className="text-xs font-mono text-blue-800 truncate pr-4">
+
+                {/* Share URL Block */}
+                <div className="flex items-center justify-between bg-white/[0.03] border border-white/[0.06] rounded-xl p-3">
+                  <p className="font-mono text-xs text-indigo-400 truncate pr-3">
                     /f/{form.share_url_id}
                   </p>
-                  <button 
-                    className="text-blue-600 hover:text-blue-800 shrink-0"
-                    title="Copy share link"
-                    onClick={async () => {
-                      const url = `${window.location.origin}/f/${form.share_url_id}`;
-                      await navigator.clipboard.writeText(url);
-                    }}
-                  >
-                    <LinkIcon className="w-4 h-4" />
-                  </button>
+                  <CopyShareUrl shareUrlId={form.share_url_id} />
                 </div>
               </div>
-              
-              <div className="border-t border-gray-100 p-4 bg-gray-50/50 flex justify-between items-center bg-white mt-auto">
+
+              {/* Card Footer */}
+              <div className="border-t border-white/[0.06] px-6 py-3.5 flex justify-between items-center">
                 <Link
                   href={`/admin/forms/${form.id}`}
-                  className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-blue-600"
+                  className="flex items-center gap-1.5 text-xs font-medium text-frost-gray hover:text-indigo-400 transition-colors duration-150"
                 >
-                  <Users className="w-4 h-4" />
+                  <Users className="w-3.5 h-3.5" strokeWidth={1.5} />
                   Responses
                 </Link>
-                <div className="flex gap-4">
+                <div className="flex gap-1">
                   <Link
                     href={`/admin/forms/${form.id}/edit`}
-                    className="text-gray-500 hover:text-gray-900 transition"
+                    className="p-2 text-dim-steel hover:text-slate-white hover:bg-white/[0.05] rounded-lg transition-all duration-150"
                     title="Edit Form"
                   >
-                    <Edit className="w-4 h-4" />
+                    <Edit className="w-3.5 h-3.5" strokeWidth={1.5} />
                   </Link>
                   <Link
                     href={`/f/${form.share_url_id}`}
                     target="_blank"
-                    className="text-gray-500 hover:text-gray-900 transition"
-                    title="View Form"
+                    className="p-2 text-dim-steel hover:text-slate-white hover:bg-white/[0.05] rounded-lg transition-all duration-150"
+                    title="View Public Form"
                   >
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-3.5 h-3.5" strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>

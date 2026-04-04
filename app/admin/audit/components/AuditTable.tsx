@@ -35,14 +35,14 @@ const ACTION_LABELS: Record<string, string> = {
 };
 
 const ACTION_ICONS: Record<string, React.ReactNode> = {
-  form_created: <Plus className="w-4 h-4 text-emerald-600" />,
-  form_updated: <Edit className="w-4 h-4 text-blue-600" />,
-  form_deleted: <Trash2 className="w-4 h-4 text-red-600" />,
-  status_changed: <CheckCircle className="w-4 h-4 text-amber-600" />,
-  submission_deleted: <Trash2 className="w-4 h-4 text-red-600" />,
-  org_created: <Plus className="w-4 h-4 text-emerald-600" />,
-  org_updated: <Edit className="w-4 h-4 text-blue-600" />,
-  org_deleted: <Trash2 className="w-4 h-4 text-red-600" />,
+  form_created: <Plus className="w-4 h-4 text-emerald-400" strokeWidth={1.5} />,
+  form_updated: <Edit className="w-4 h-4 text-blue-400" strokeWidth={1.5} />,
+  form_deleted: <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />,
+  status_changed: <CheckCircle className="w-4 h-4 text-amber-400" strokeWidth={1.5} />,
+  submission_deleted: <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />,
+  org_created: <Plus className="w-4 h-4 text-emerald-400" strokeWidth={1.5} />,
+  org_updated: <Edit className="w-4 h-4 text-blue-400" strokeWidth={1.5} />,
+  org_deleted: <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />,
 };
 
 export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
@@ -116,10 +116,11 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+      {/* Filters */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 glass-card-elevated p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 flex-1 w-full">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-indigo-600 transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
             <input
               type="text"
               placeholder="Search logs..."
@@ -128,18 +129,18 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm outline-none font-medium"
+              className="input-dark w-full pl-11"
             />
           </div>
           <div className="relative group">
-            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-indigo-600 transition-colors" />
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
             <select
               value={actionFilter}
               onChange={(e) => {
                 setActionFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm outline-none font-medium appearance-none"
+              className="input-dark w-full pl-11 appearance-none"
             >
               <option value="All">All Actions</option>
               {Object.entries(ACTION_LABELS).map(([key, label]) => (
@@ -157,10 +158,10 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 setDateFrom(e.target.value);
                 setCurrentPage(1);
               }}
-              className="flex-1 px-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none font-medium"
+              className="input-dark flex-1 text-sm"
               placeholder="From"
             />
-            <span className="text-slate-400 text-sm">to</span>
+            <span className="text-dim-steel text-sm">to</span>
             <input
               type="date"
               value={dateTo}
@@ -168,7 +169,7 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 setDateTo(e.target.value);
                 setCurrentPage(1);
               }}
-              className="flex-1 px-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none font-medium"
+              className="input-dark flex-1 text-sm"
               placeholder="To"
             />
           </div>
@@ -176,133 +177,134 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="flex items-center gap-1 px-3 py-2 text-sm text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition"
+            className="flex items-center gap-1 px-3 py-2 text-sm text-dim-steel hover:text-slate-white hover:bg-white/5 rounded-xl transition-colors duration-150"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" strokeWidth={1.5} />
             Clear
           </button>
         )}
       </div>
 
       {hasActiveFilters && (
-        <div className="text-sm text-slate-500 font-medium">
+        <div className="text-sm text-dim-steel font-medium">
           Showing {filteredAndSorted.length} of {logs.length} logs
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in">
+      {/* Table */}
+      <div className="glass-card-elevated overflow-hidden animate-fade-in">
         <div className="overflow-x-auto text-sm">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+              <tr className="border-b border-white/[0.06]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   #
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Action
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Target
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Target Type
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Timestamp
                 </th>
-                <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                <th className="px-6 py-3.5 font-semibold text-dim-steel uppercase tracking-wider text-[11px]">
                   Details
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {paginatedLogs.map((log, idx) => {
                 const isExpanded = expandedId === log.id;
                 return (
                   <>
                     <tr
                       key={log.id}
-                      className="hover:bg-slate-50/30 transition-colors cursor-pointer"
+                      className="table-row-hover group cursor-pointer border-b border-white/[0.04]"
                       onClick={() =>
                         setExpandedId(isExpanded ? null : log.id)
                       }
                     >
-                      <td className="px-6 py-4 text-slate-400 font-medium text-xs">
+                      <td className="px-6 py-4 text-dim-steel font-medium text-xs">
                         {(currentPage - 1) * pageSize + idx + 1}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           {ACTION_ICONS[log.action] || (
-                            <FileText className="w-4 h-4 text-slate-400" />
+                            <FileText className="w-4 h-4 text-dim-steel" strokeWidth={1.5} />
                           )}
-                          <span className="font-semibold text-slate-800 text-sm">
+                          <span className="font-semibold text-slate-white text-sm">
                             {ACTION_LABELS[log.action] || log.action}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 font-medium text-sm">
+                        <span className="text-frost-gray font-medium text-sm">
                           {getTargetLabel(log)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold uppercase">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-white/[0.06] text-dim-steel text-xs font-bold uppercase border border-white/[0.06]">
                           {log.target_type}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-500 font-medium text-sm">
+                      <td className="px-6 py-4 text-dim-steel font-medium text-sm">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {new Date(log.created_at).toLocaleString()}
+                          <Calendar className="w-3.5 h-3.5" strokeWidth={1.5} />
+                          {new Date(log.created_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                        <button className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors duration-150">
                           {isExpanded ? 'Hide' : 'View'}
                         </button>
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr className="bg-slate-50/50">
+                      <tr className="bg-white/[0.02]">
                         <td colSpan={6} className="px-6 py-6">
                           <div className="space-y-4">
-                            <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+                            <h4 className="font-display font-semibold text-slate-white text-sm uppercase tracking-wide">
                               Log Details
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Log ID:
                                 </span>
-                                <p className="text-slate-800 font-mono text-xs mt-1">
+                                <p className="text-frost-gray font-mono text-xs mt-1">
                                   {log.id}
                                 </p>
                               </div>
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Admin ID:
                                 </span>
-                                <p className="text-slate-800 font-mono text-xs mt-1">
+                                <p className="text-frost-gray font-mono text-xs mt-1">
                                   {log.admin_id || 'System'}
                                 </p>
                               </div>
                               <div>
-                                <span className="text-slate-500 font-medium">
+                                <span className="text-dim-steel font-medium">
                                   Target ID:
                                 </span>
-                                <p className="text-slate-800 font-mono text-xs mt-1">
+                                <p className="text-frost-gray font-mono text-xs mt-1">
                                   {log.target_id}
                                 </p>
                               </div>
                             </div>
                             {log.details && (
-                              <div className="border border-slate-200 rounded-xl overflow-hidden">
-                                <div className="bg-white px-4 py-3 border-b border-slate-200">
-                                  <h5 className="font-semibold text-slate-700 text-sm">
+                              <div className="border border-white/[0.06] rounded-xl overflow-hidden">
+                                <div className="bg-white/[0.03] px-4 py-3 border-b border-white/[0.06]">
+                                  <h5 className="font-semibold text-frost-gray text-sm">
                                     Details (JSON)
                                   </h5>
                                 </div>
-                                <pre className="bg-white p-4 text-xs text-slate-700 overflow-x-auto max-h-64">
+                                <pre className="bg-deep-abyss/50 p-4 text-xs text-frost-gray overflow-x-auto max-h-64 font-mono">
                                   {JSON.stringify(log.details, null, 2)}
                                 </pre>
                               </div>
@@ -318,7 +320,7 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-6 py-20 text-center text-slate-400 font-bold bg-slate-50/20"
+                    className="px-6 py-20 text-center text-dim-steel font-semibold"
                   >
                     No audit logs found matching your filters.
                   </td>
@@ -329,16 +331,17 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
         </div>
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-sm text-slate-500 font-medium">
+        <div className="flex items-center justify-between glass-card px-6 py-4">
+          <p className="text-sm text-dim-steel font-medium">
             Page {currentPage} of {totalPages} ({filteredAndSorted.length} total)
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="p-2 rounded-xl border border-white/[0.06] text-dim-steel hover:bg-white/5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -357,10 +360,10 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={`w-9 h-9 rounded-xl text-sm font-bold transition ${
+                  className={`w-9 h-9 rounded-xl text-sm font-semibold transition-colors duration-150 ${
                     currentPage === page
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'bg-indigo-primary text-white shadow-lg shadow-indigo-primary/20'
+                      : 'text-frost-gray hover:bg-white/5'
                   }`}
                 >
                   {page}
@@ -372,7 +375,7 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 setCurrentPage((p) => Math.min(totalPages, p + 1))
               }
               disabled={currentPage === totalPages}
-              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="p-2 rounded-xl border border-white/[0.06] text-dim-steel hover:bg-white/5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

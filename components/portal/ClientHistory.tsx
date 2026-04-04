@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Search, Loader2, History, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
-import { getOrganizationResponsesAction } from '@/app/actions/form';
 import { FormResponse } from '@/types/database';
 
 export default function ClientHistory({ formIds }: { formIds: string[] }) {
@@ -33,11 +32,24 @@ export default function ClientHistory({ formIds }: { formIds: string[] }) {
     }
   };
 
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'Done':
+        return { icon: CheckCircle2, bg: 'bg-emerald-500/15', color: 'text-emerald-400', badge: 'badge-done' };
+      case 'In Progress':
+        return { icon: Clock, bg: 'bg-amber-500/15', color: 'text-amber-400', badge: 'badge-in-progress' };
+      default:
+        return { icon: AlertCircle, bg: 'bg-indigo-500/15', color: 'text-indigo-400', badge: 'badge-received' };
+    }
+  };
+
   return (
-    <div className="mt-12 pt-12 border-t border-slate-200">
+    <div className="mt-10 pt-10 border-t border-white/[0.06]">
       <div className="flex items-center gap-3 mb-6">
-        <History className="w-5 h-5 text-indigo-500" />
-        <h2 className="text-xl font-bold text-slate-900">Track My Submissions</h2>
+        <History className="w-5 h-5 text-indigo-400" strokeWidth={1.5} />
+        <h2 className="font-display text-lg font-semibold text-slate-white tracking-tight">
+          Track My Submissions
+        </h2>
       </div>
 
       <form onSubmit={handleSearch} className="mb-8 max-w-md">
@@ -47,51 +59,68 @@ export default function ClientHistory({ formIds }: { formIds: string[] }) {
             placeholder="Enter your Organization Name..."
             value={orgName}
             onChange={(e) => setOrgName(e.target.value)}
-            className="flex-1 px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 outline-none text-sm transition-all"
+            className="input-dark flex-1"
           />
-          <button 
+          <button
             type="submit"
             disabled={isLoading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-600/10 transition-all disabled:opacity-50"
+            className="btn-primary flex items-center gap-2 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Search'}
           </button>
         </div>
-        <p className="mt-2 text-[10px] text-slate-400 font-medium italic">
+        <p className="mt-2 text-[10px] text-dim-steel font-medium italic">
           Enter the exact organization name you used during submission.
         </p>
       </form>
 
       {submissions && submissions.length > 0 && (
-        <div className="space-y-4 animate-fade-in">
-          {submissions.map((sub) => (
-            <div key={sub.id} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-xl ${
-                  sub.status === 'Done' ? 'bg-emerald-50 text-emerald-600' :
-                  sub.status === 'In Progress' ? 'bg-amber-50 text-amber-600' :
-                  'bg-indigo-50 text-indigo-600'
-                }`}>
-                  {sub.status === 'Done' ? <CheckCircle2 className="w-5 h-5" /> :
-                   sub.status === 'In Progress' ? <Clock className="w-5 h-5" /> :
-                   <AlertCircle className="w-5 h-5" />}
+        <div className="space-y-3 animate-crystallize stagger-children">
+          {submissions.map((sub) => {
+            const config = getStatusConfig(sub.status || 'Received');
+            const StatusIcon = config.icon;
+            return (
+              <div
+                key={sub.id}
+                className="crystal-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`${config.bg} p-2.5 rounded-xl`}>
+                    <StatusIcon className={`w-5 h-5 ${config.color}`} strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-white">
+                      {sub.status || 'Received'}
+                    </p>
+                    <p className="text-xs text-dim-steel">
+                      {new Date(sub.created_at).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                      {' · '}
+                      {(sub.data as any).bulkEntries
+                        ? `${(sub.data as any).bulkEntries.length} records`
+                        : '1 record'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-900">{sub.status || 'Received'}</p>
-                  <p className="text-xs text-slate-500">{new Date(sub.created_at).toLocaleDateString()} • {sub.data.bulkEntries ? `${sub.data.bulkEntries.length} records` : '1 record'}</p>
+                <div className="px-3 py-1.5 bg-white/[0.04] rounded-xl border border-white/[0.06]">
+                  <span className="font-mono text-[11px] font-semibold text-frost-gray uppercase tracking-wider">
+                    Ref: {sub.id.slice(0, 8)}
+                  </span>
                 </div>
               </div>
-              <div className="px-4 py-1.5 bg-slate-50 rounded-lg border border-slate-100">
-                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">Reference ID: {sub.id.slice(0, 8)}</span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {submissions && submissions.length === 0 && (
-        <div className="bg-slate-50 rounded-2xl p-8 text-center border border-slate-100 animate-fade-in">
-          <p className="text-sm text-slate-500 font-medium">No submissions found for "{orgName}".</p>
+        <div className="glass-card p-8 text-center animate-crystallize">
+          <p className="text-sm text-dim-steel font-medium">
+            No submissions found for &ldquo;{orgName}&rdquo;.
+          </p>
         </div>
       )}
     </div>

@@ -9,8 +9,8 @@ export default async function AdminAuditPage() {
   return (
     <div className="py-8 space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Audit Log</h1>
-        <p className="mt-2 text-sm text-slate-500 font-medium">Track all admin actions on forms and submissions.</p>
+        <h1 className="font-display text-3xl font-bold text-slate-white tracking-tight">Audit Log</h1>
+        <p className="mt-2 text-sm text-frost-gray font-medium">Track all admin actions on forms and submissions.</p>
       </div>
 
       <AuditTable initialLogs={logs} forms={forms} />

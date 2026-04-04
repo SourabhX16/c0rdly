@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'GPRS – Grand Printing Reliable Solutions',
+  title: 'C0rdly — GPRS Form Management Platform',
   description:
-    'Professional printing and digital data collection for institutions. Marksheets, ID Cards, and bulk document processing.',
-  keywords: ['printing press', 'marksheet', 'data collection', 'GPRS', 'India', 'bulk printing'],
+    'Production-grade multi-tenant form management for Indian printing presses. Dynamic forms, bulk data collection, and submission tracking.',
+  keywords: ['printing press', 'form management', 'data collection', 'GPRS', 'C0rdly', 'India', 'bulk printing'],
 };
 
 export default function RootLayout({
@@ -14,8 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-surface-50 text-surface-900">
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-cosmic-navy text-slate-white antialiased">
+        {/* Noise texture overlay — star field grain */}
+        <div className="noise-overlay" aria-hidden="true" />
         {children}
       </body>
     </html>
