@@ -36,106 +36,53 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Public paths that don't require auth
-  const publicPaths = ['/login', '/signup', '/'];
-  const isPublicPath = publicPaths.some((path) =>
-    request.nextUrl.pathname === path
-  );
+  const pathname = request.nextUrl.pathname;
 
+  // 2. Public paths that skip auth: /login, /, and anything starting with /f/
+  const isPublicPath = pathname === '/login' || pathname === '/' || pathname.startsWith('/f/');
+
+  // 1. If no user, redirect to /login
   if (!user && !isPublicPath) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/login';
+    return NextResponse.redirect(redirectUrl);
   }
 
-  if (user && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/')) {
-    console.log('🔍 Login redirect - User ID:', user.id);
-    
-    // TEMPORARY: Always redirect to /admin for authenticated users
-    console.log('⚠️ TEMPORARY: Redirecting all authenticated users to /admin');
-    const url = request.nextUrl.clone();
-    url.pathname = '/admin';
-    return NextResponse.redirect(url);
-    
-    /* Original code - commented out for debugging
-    // Fetch profile to determine role-based redirect
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+  if (user) {
+    const isAuthRedirectPath = pathname === '/login' || pathname === '/';
+    const isAdminPath = pathname.startsWith('/admin');
+    const isPortalPath = pathname.startsWith('/portal');
 
-    console.log('🔍 Login redirect - Profile:', profile);
+    if (isAuthRedirectPath || isAdminPath || isPortalPath) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
 
-    const url = request.nextUrl.clone();
-    if (profile?.role === 'admin') {
-      console.log('✅ Redirecting to /admin');
-      url.pathname = '/admin';
-    } else {
-      console.log('⚠️ Redirecting to /dashboard (not admin)');
-      url.pathname = '/dashboard';
+      const role = profile?.role;
+
+      // 3. If authenticated user visits /login or /
+      if (isAuthRedirectPath) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = role === 'admin' ? '/admin' : '/portal';
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      // 4. If authenticated user visits any /admin/* path, but role is not admin
+      if (isAdminPath && role !== 'admin') {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = '/portal';
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      // 5. If authenticated user visits any /portal/* path, but role is admin
+      if (isPortalPath && role === 'admin') {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = '/admin';
+        return NextResponse.redirect(redirectUrl);
+      }
     }
-    return NextResponse.redirect(url);
-    */
-  }
-
-  // Role-based route protection
-  if (user && request.nextUrl.pathname.startsWith('/admin')) {
-    console.log('🔒 Admin route check - User ID:', user.id);
-    
-    // TEMPORARY: Skip role check, allow all authenticated users
-    console.log('⚠️ TEMPORARY: Allowing all authenticated users to /admin');
-    return supabaseResponse;
-    
-    /* Original code - commented out for debugging
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    console.log('🔒 Admin route check - Profile:', profile);
-    console.log('🔒 Admin route check - Error:', profileError);
-
-    // TEMPORARY: Allow access even if not admin (for debugging)
-    if (!profile) {
-      console.log('⚠️ No profile found, but allowing access for debugging');
-      // Create profile on the fly
-      await supabase.from('profiles').insert({
-        id: user.id,
-        role: 'admin',
-        contact_email: user.email
-      });
-    } else if (profile?.role !== 'admin') {
-      console.log('❌ Not admin, redirecting to /dashboard');
-      const url = request.nextUrl.clone();
-      url.pathname = '/dashboard';
-      return NextResponse.redirect(url);
-    }
-    console.log('✅ Admin verified, allowing access');
-    */
-  }
-
-  if (user && request.nextUrl.pathname.startsWith('/dashboard')) {
-    console.log('🔄 Dashboard redirect - redirecting to /admin');
-    // TEMPORARY: Redirect dashboard to admin
-    const url = request.nextUrl.clone();
-    url.pathname = '/admin';
-    return NextResponse.redirect(url);
-    
-    /* Original code - commented out
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role === 'admin') {
-      const url = request.nextUrl.clone();
-      url.pathname = '/admin';
-      return NextResponse.redirect(url);
-    }
-    */
   }
 
   return supabaseResponse;
