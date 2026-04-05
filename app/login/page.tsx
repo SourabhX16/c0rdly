@@ -21,10 +21,22 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
 
-      router.push('/admin');
+      if (authData.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', authData.user.id)
+          .single();
+
+        if (profile?.role === 'admin') {
+          router.push('/admin');
+        } else {
+          router.push('/portal');
+        }
+      }
       router.refresh();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Invalid credentials');
@@ -45,7 +57,7 @@ export default function LoginPage() {
         </div>
         <div className="max-w-md">
           <h2 className="font-display text-4xl font-bold leading-tight text-slate-white mb-4 tracking-tight">
-            Admin Portal
+            GPRS Portal
           </h2>
           <p className="text-frost-gray leading-relaxed">
             Manage data requests, forms, and incoming submissions for the press.
@@ -68,10 +80,10 @@ export default function LoginPage() {
 
           <div className="mb-8">
             <h1 className="font-display text-3xl font-bold text-slate-white tracking-tight">
-              GPRS Admin Login
+              Welcome Back
             </h1>
             <p className="mt-2 text-sm text-dim-steel font-medium">
-              Restricted access for GPRS staff only
+              Sign in to your account
             </p>
           </div>
 
