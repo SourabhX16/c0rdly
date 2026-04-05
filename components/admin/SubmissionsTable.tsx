@@ -316,7 +316,7 @@ export default function SubmissionsTable({
                 setDateTo(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none font-medium"
+              className="input-dark text-sm"
               placeholder="To"
             />
           </div>
@@ -649,7 +649,7 @@ export default function SubmissionsTable({
                 setCurrentPage((p) => Math.min(totalPages, p + 1))
               }
               disabled={currentPage === totalPages}
-              className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="p-2 rounded-xl border border-white/[0.06] text-dim-steel hover:bg-white/5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
