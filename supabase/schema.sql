@@ -6,7 +6,7 @@
 -- 1. Profiles table (extends auth.users)
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  role TEXT NOT NULL DEFAULT 'admin' CHECK (role IN ('admin')),
+  role TEXT NOT NULL DEFAULT 'client' CHECK (role IN ('admin', 'client')),
   organization_name TEXT, -- The name of the GPRS Admin organization
   contact_email TEXT,
   phone TEXT,
@@ -35,6 +35,10 @@ CREATE POLICY "Users can insert own profile"
 
 CREATE POLICY "Users can update own profile"
   ON public.profiles FOR UPDATE
+  USING (auth.uid() = id);
+
+CREATE POLICY "Clients can read own profile"
+  ON public.profiles FOR SELECT
   USING (auth.uid() = id);
 
 -- ============================================================
