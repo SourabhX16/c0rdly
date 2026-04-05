@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className="min-h-screen bg-cosmic-navy text-slate-white antialiased">
         {/* Noise texture overlay — star field grain */}
         <div className="noise-overlay" aria-hidden="true" />

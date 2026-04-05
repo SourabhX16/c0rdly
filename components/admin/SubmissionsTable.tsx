@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Download,
   Filter,
@@ -404,9 +404,8 @@ export default function SubmissionsTable({
                 const form = forms.find((f) => f.id === sub.form_id);
                 const isExpanded = expandedId === sub.id;
                 return (
-                  <>
+                  <React.Fragment key={sub.id}>
                     <tr
-                      key={sub.id}
                       className="table-row-hover group cursor-pointer border-b border-white/[0.04]"
                       onClick={() =>
                         setExpandedId(isExpanded ? null : sub.id)
@@ -596,7 +595,7 @@ export default function SubmissionsTable({
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
               {paginatedSubmissions.length === 0 && (
