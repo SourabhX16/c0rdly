@@ -42,7 +42,7 @@ export async function getAuditLogsAction(params?: {
   const supabase = await createClient();
   let query = supabase
     .from('audit_logs')
-    .select('*, profiles!audit_logs_admin_id_fkey(organization_name, contact_email)');
+    .select('*, profiles!audit_logs_admin_id_fkey(school_name, contact_email)');
 
   if (params?.actionType && params.actionType !== 'All') {
     query = query.eq('action', params.actionType);
