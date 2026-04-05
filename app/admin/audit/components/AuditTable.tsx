@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -221,9 +221,8 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
               {paginatedLogs.map((log, idx) => {
                 const isExpanded = expandedId === log.id;
                 return (
-                  <>
+                  <React.Fragment key={log.id}>
                     <tr
-                      key={log.id}
                       className="table-row-hover group cursor-pointer border-b border-white/[0.04]"
                       onClick={() =>
                         setExpandedId(isExpanded ? null : log.id)
@@ -313,7 +312,7 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
               {paginatedLogs.length === 0 && (
