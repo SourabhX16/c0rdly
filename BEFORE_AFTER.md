@@ -352,3 +352,43 @@ Test coverage:        Ready for tests ✅
 
 STATUS: PRODUCTION READY 🎉
 ```
+
+---
+
+## 🔵 PHASE 5: Bug Fixes & Testing (BEFORE → AFTER)
+
+### Bug #1: Audit Logs Error
+```
+❌ BEFORE:
+getAuditLogsAction failed with empty error object due to missing RLS policy and wrong column name organization_name.
+
+✅ AFTER:
+added authenticated read policy for audit_logs, fixed column name to school_name, error resolved.
+```
+
+### Bug #2: React Key Prop Warning
+```
+❌ BEFORE:
+AuditTable map returned bare fragment <> with key on inner tr causing React warning.
+
+✅ AFTER:
+replaced with React.Fragment key={log.id} on outer wrapper, warning resolved.
+```
+
+### Bug #3: Public Form Dark Theme
+```
+❌ BEFORE:
+/f/[shareId] used light-form-container with white background making dark-styled labels invisible.
+
+✅ AFTER:
+replaced with bg-cosmic-navy and dark tokens, form now fully consistent with Midnight Galaxy theme.
+```
+
+### Bug #4: Organizations & Audit RLS
+```
+❌ BEFORE:
+audit_logs and organizations tables had RLS enabled but no read policies, blocking all queries.
+
+✅ AFTER:
+added authenticated read and manage policies for both tables.
+```
