@@ -4,7 +4,7 @@
 
 ```
 /
-├── /login                          → Admin authentication
+├── /login                          → Shared login for admin and client users
 ├── /admin                          → Dashboard with stats
 │   ├── /forms                      → Forms list
 │   │   ├── /new                    → Create form (redirects to [id]/edit)
@@ -18,6 +18,17 @@
 │   └── (includes ClientHistory)    → Track submissions
 └── /f/[shareId]                    → Public form submission
 ```
+
+## 🔐 Authentication & Role System
+
+- Two roles exist in the system: `admin` and `client`.
+- Both roles use the same shared `/login` page.
+- After login, the middleware checks the `profiles` table `role` column and redirects:
+  - Admins to `/admin`
+  - Clients to `/portal`
+- Server-side Layout Protection:
+  - The admin layout checks the user role and redirects non-admins to `/portal`.
+  - The portal layout checks the user role and redirects admins to `/admin`.
 
 ## 📊 Data Flow (FIXED)
 
@@ -224,11 +235,12 @@ return data.id;
 
 ## 🔐 Security Model
 
-### RLS Policies (Unchanged)
-- Admins: Full access to all tables
-- Public: Can view forms by share_url_id
-- Public: Can insert form_responses
-- Public: Cannot read other responses
+### RLS Policies
+- Admin has full access
+- clients can read own profile only
+- public can view forms by share_url_id
+- public can insert form_responses
+- authenticated users can read any profile via the middleware policy
 
 ### Rate Limiting
 - In-memory (temporary) ⚠️

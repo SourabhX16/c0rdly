@@ -1,5 +1,43 @@
 # Before & After - Visual Comparison
 
+## 🔐 PHASE 0: Authentication Separation (BEFORE → AFTER)
+
+### Auth #1: Login Redirect
+```
+❌ BEFORE:
+All authenticated users hardcoded to /admin.
+
+✅ AFTER:
+Fetches role from profiles table, admin goes to /admin, client goes to /portal.
+```
+
+### Auth #2: Portal Layout Guard
+```
+❌ BEFORE:
+No auth guard, anyone could access /portal.
+
+✅ AFTER:
+Server-side auth check, redirects unauthenticated users to /login and admins to /admin.
+```
+
+### Auth #3: Middleware Routing
+```
+❌ BEFORE:
+All role-based routing was commented out with TEMPORARY blocks.
+
+✅ AFTER:
+Clean role-based routing restored, checks profiles table for role on protected routes.
+```
+
+### Auth #4: RLS Policy Check
+```
+❌ BEFORE:
+Recursive admin policy caused infinite loop, returned null role for all users.
+
+✅ AFTER:
+Removed recursive policy, replaced with simple authenticated read policy.
+```
+
 ## 🔴 PHASE 1: Critical Bugs (BEFORE → AFTER)
 
 ### Issue #1: Validation Key Mismatch

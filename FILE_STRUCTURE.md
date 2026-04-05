@@ -20,7 +20,7 @@ c0rdly/
 
 ```
 supabase/
-├── schema.sql                            Initial database schema
+├── schema.sql                            ✅ UPDATED - Added client role, fixed recursive RLS policy
 └── migrations/
     ├── 002_audit_logs.sql
     ├── 003_organizations.sql
@@ -49,6 +49,7 @@ c0rdly/
 │   │       └── page.tsx                  (Unchanged)
 │   │
 │   ├── portal/
+│   │   ├── layout.tsx                    ✅ FIXED - Auth guard added
 │   │   └── page.tsx                      ✅ HAS - "How It Works" section
 │   │
 │   └── f/[shareId]/
@@ -68,7 +69,9 @@ c0rdly/
 │
 ├── lib/
 │   ├── validation.ts                     ✅ FIXED - Field ID consistency
-│   └── rate-limit.ts                     ✅ ADDED - Warning comment
+│   ├── rate-limit.ts                     ✅ ADDED - Warning comment
+│   └── supabase/
+│       └── middleware.ts                 ✅ FIXED - Role-based routing restored
 │
 └── package.json                          ✅ REMOVED - @react-pdf/renderer
 ```
@@ -82,6 +85,13 @@ c0rdly/
 ❌ app/admin/print-jobs/page.tsx          (Deleted - was redirect only)
 ❌ app/admin/schools/page.tsx             (Deleted - was redirect only)
 ```
+
+## 🔐 Auth Changes
+
+- Middleware restored with admin/client routing
+- Portal layout now has server-side auth guard
+- Login page now redirects by role
+- Recursive RLS policy removed and replaced with authenticated read policy
 
 ## 📊 Statistics
 
