@@ -230,70 +230,78 @@ export default function SubmissionsTable({
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 glass-card-elevated p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 w-full">
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
-            <input
-              type="text"
-              placeholder="Search all fields..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="input-dark w-full pl-11"
-            />
+          <div className="bg-midnight-panel rounded-2xl">
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
+              <input
+                type="text"
+                placeholder="Search all fields..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="input-dark w-full pl-11"
+              />
+            </div>
           </div>
-          <div className="relative group">
-            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
-            <select
-              value={orgFilter}
-              onChange={(e) => {
-                setOrgFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="input-dark w-full pl-11 appearance-none"
-            >
-              <option value="All">All Organizations</option>
-              {orgs.map((org) => (
-                <option key={org} value={org}>
-                  {org}
-                </option>
-              ))}
-            </select>
+          <div className="bg-midnight-panel rounded-2xl">
+            <div className="relative group">
+              <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
+              <select
+                value={orgFilter}
+                onChange={(e) => {
+                  setOrgFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="input-dark bg-surface-800 text-slate-white w-full pl-11 appearance-none"
+              >
+                <option value="All">All Organizations</option>
+                {orgs.map((org) => (
+                  <option key={org} value={org}>
+                    {org}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="relative group">
-            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
-            <select
-              value={formFilter}
-              onChange={(e) => {
-                setFormFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="input-dark w-full pl-11 appearance-none"
-            >
-              <option value="All">All Form Types</option>
-              {forms.map((f) => (
-                <option key={f.id} value={f.id}>
-                  {f.title}
-                </option>
-              ))}
-            </select>
+          <div className="bg-midnight-panel rounded-2xl">
+            <div className="relative group">
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
+              <select
+                value={formFilter}
+                onChange={(e) => {
+                  setFormFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="input-dark bg-surface-800 text-slate-white w-full pl-11 appearance-none"
+              >
+                <option value="All">All Form Types</option>
+                {forms.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="relative group">
-            <ClipboardCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="input-dark w-full pl-11 appearance-none"
-            >
-              <option value="All">All Statuses</option>
-              <option value="Received">Received</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
-            </select>
+          <div className="bg-midnight-panel rounded-2xl">
+            <div className="relative group">
+              <ClipboardCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-dim-steel w-4 h-4 group-focus-within:text-indigo-400 transition-colors" strokeWidth={1.5} />
+              <select
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="input-dark bg-surface-800 text-slate-white w-full pl-11 appearance-none"
+              >
+                <option value="All">All Statuses</option>
+                <option value="Received">Received</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+              </select>
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
