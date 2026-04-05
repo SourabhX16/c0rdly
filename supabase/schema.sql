@@ -23,11 +23,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- PROFILES policies
-CREATE POLICY "Admin can read all profiles"
+CREATE POLICY "Allow middleware to read any profile"
   ON public.profiles FOR SELECT
-  USING (
-    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
-  );
+  TO authenticated
+  USING (true);
 
 CREATE POLICY "Users can insert own profile"
   ON public.profiles FOR INSERT
