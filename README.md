@@ -1,62 +1,30 @@
 # c0rdly
 
-> Multi-tenant SaaS platform for Indian printing presses to manage school report card generation and bulk PDF printing.
-
-## ⚠️ IMPORTANT: Implementation Complete
-
-**All 15 critical fixes and features have been implemented!** See:
-- 📋 [SUMMARY.md](./SUMMARY.md) - Quick overview of all changes
-- 📖 [IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md) - Detailed implementation notes
-- 🧪 [TESTING_GUIDE.md](./TESTING_GUIDE.md) - How to test each feature
-- 🚀 [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) - Deployment steps
-- 🏗️ [ARCHITECTURE.md](./ARCHITECTURE.md) - System architecture
-
-### Quick Start After Implementation
-
-1. **Run database migration:**
-   ```sql
-   -- In Supabase SQL Editor, run:
-   supabase/migrations/005_add_constraints_indexes.sql
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Test the application:**
-   ```bash
-   npm run dev
-   ```
-   Then follow [TESTING_GUIDE.md](./TESTING_GUIDE.md)
-
----
+> Dynamic form management platform with bulk data collection, organization tracking, and admin analytics.
 
 ## Features
 
-- **Bulk CSV Upload** — Upload hundreds of students at once with auto-validation
-- **Pixel-Perfect PDFs** — Generate CBSE & State Board report cards matching physical print layouts
-- **Dynamic Subjects** — Subjects auto-adjust per class, stored as flexible JSONB
-- **School Isolation** — Row-Level Security ensures each school sees only their data
-- **Multi-School Admin** — Printing press admin dashboard to manage all schools and batch-generate PDFs
-- **Excel Export** — Download student data as structured spreadsheets
-- **Session Management** — Switch between academic years (2024-25, 2025-26)
-- **School Branding** — Upload school logos that appear on PDF report cards
-- **Student Photos** — Upload and display student photos in report cards
-- **Rate Limiting** — Protection against bulk upload abuse
+- **Dynamic Form Builder** — Drag-and-drop interface to create custom forms with multiple field types
+- **Bulk Data Upload** — CSV/Excel import with auto-validation and error reporting
+- **Organization Management** — Track submissions by organization with fuzzy search autocomplete
+- **Public Form Sharing** — Generate shareable links for external data collection
+- **Client Portal** — Dedicated portal for organizations to view their forms
+- **Advanced Filtering** — Search and filter submissions by status, organization, and date
+- **Audit Logging** — Track all form and submission changes with timestamps
+- **JSONB Storage** — Flexible field storage without schema migrations
+- **Row-Level Security** — Supabase RLS ensures data isolation
+- **Export Capabilities** — Download submission data and CSV templates
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 16 (App Router, RSC, TypeScript) |
-| Backend | Supabase (Auth, Postgres + RLS, Storage) |
-| Styling | Tailwind CSS v4 (`@theme` tokens) |
-| CSV Parsing | `papaparse` |
-| Excel Export | `xlsx` |
-| ZIP/Download | `jszip` + `file-saver` |
+| Frontend | Next.js 15 (App Router, Server Components, TypeScript) |
+| Backend | Supabase (Auth, Postgres + RLS) |
+| Styling | Tailwind CSS |
+| CSV/Excel | `papaparse`, `xlsx` |
 | Icons | `lucide-react` |
-| Deployment | Vercel + Supabase (Free Tier) |
+| Deployment | Vercel + Supabase |
 
 ## Quick Start
 
@@ -68,15 +36,17 @@ npm install
 
 # 2. Set up environment
 cp .env.example .env.local
-# Edit .env.local with your Supabase credentials
+# Add your Supabase credentials:
+# NEXT_PUBLIC_SUPABASE_URL=your-project-url
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ### Supabase Setup
 
 1. Create a project at [supabase.com](https://supabase.com)
-2. Go to **Settings → API** and copy your **Project URL** and **anon public** key
-3. Paste them into `.env.local`
-4. Go to **SQL Editor**, paste the contents of `supabase/schema.sql`, and run it
+2. Copy **Project URL** and **anon key** from Settings → API
+3. Run `supabase/schema.sql` in SQL Editor
+4. Run migrations in `supabase/migrations/` folder
 
 ### Run
 
@@ -84,15 +54,14 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open  : https://c0rdly.vercel.app
+Open http://localhost:3000 or visit https://c0rdly.vercel.app
 
 ### Create Admin User
 
-1. Sign up via the app (creates a `school` role by default)
-2. In Supabase SQL Editor, run:
-   ```sql
-   UPDATE profiles SET role = 'admin' WHERE contact_email = 'your@email.com';
-   ```
+```sql
+-- In Supabase SQL Editor:
+UPDATE profiles SET role = 'admin' WHERE email = 'your@email.com';
+```
 
 ## Project Structure
 
@@ -131,23 +100,25 @@ c0rdly/
 
 ## Architecture
 
-- **Dynamic Forms** — Create custom forms with drag-drop builder
-- **JSONB for form data** — Flexible field storage without schema changes
-- **Field ID consistency** — Validation and storage use same keys (✅ FIXED)
-- **Org name autocomplete** — Fuzzy search for existing organizations (✅ NEW)
-- **CSV template generation** — One-click download with correct headers (✅ NEW)
-- **Single-query optimization** — Replaced loops with efficient queries (✅ FIXED)
-- **Database constraints** — Status validation and performance indexes (✅ NEW)
-- **Server Components by default** — Only `'use client'` where interactivity is needed
-- **URL-based routing** — Deep-linkable form responses and org details
+- **Dynamic Forms** — Drag-drop form builder with real-time preview
+- **JSONB Storage** — Flexible field storage without schema migrations
+- **Field ID Consistency** — Unified validation and storage keys
+- **Organization Autocomplete** — Fuzzy search for existing organizations
+- **CSV Template Generation** — Auto-generated templates with correct headers
+- **Optimized Queries** — Single-query bulk operations
+- **Database Constraints** — Status validation and performance indexes
+- **Server Components** — RSC by default, client components only where needed
+- **URL-based Routing** — Deep-linkable forms and submissions
 
-## Deploy
+## Deployment
 
 ```bash
 vercel --prod
 ```
 
-Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel project settings.
+Set environment variables in Vercel:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ## License
 
