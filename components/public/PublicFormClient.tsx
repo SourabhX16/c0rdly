@@ -5,7 +5,7 @@ import { Form } from '@/types/database';
 import { submitFormResponseAction } from '@/app/actions/form';
 import { searchOrganizations } from '@/actions/submissions';
 import { createSubmissionSchema } from '@/lib/validation';
-import { CheckCircle, UploadCloud, Edit3, Download } from 'lucide-react';
+import { CheckCircle, UploadCloud, Edit3, Download, Plus } from 'lucide-react';
 import BulkUploadClient from './BulkUploadClient';
 import Papa from 'papaparse';
 
@@ -13,6 +13,9 @@ export default function PublicFormClient({ form }: { form: Form }) {
   const [orgName, setOrgName] = useState('');
   const [orgSuggestions, setOrgSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showNewIdForm, setShowNewIdForm] = useState(false);
+  const [newIdData, setNewIdData] = useState({ email: '', phone: '', address: '' });
+  const [isGeneratingId, setIsGeneratingId] = useState(false);
   const [mode, setMode] = useState<'manual' | 'bulk' | null>(null);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -81,6 +84,39 @@ export default function PublicFormClient({ form }: { form: Form }) {
     }
   };
 
+  const handleGenerateId = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!orgName.trim()) {
+      setErrors({ orgName: 'Organization name is required' });
+      return;
+    }
+
+    setIsGeneratingId(true);
+    try {
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const { data, error } = await supabase
+        .from('organizations')
+        .insert({
+          name: orgName.trim(),
+          contact_email: newIdData.email || null,
+          phone: newIdData.phone || null,
+          address: newIdData.address || null,
+        })
+        .select('id')
+        .single();
+
+      if (error) throw error;
+
+      alert(`ID Generated Successfully!\n\nYour Organization ID: ${data.id}\n\nUse "${orgName}" as your organization name when submitting forms.`);
+      setShowNewIdForm(false);
+      setNewIdData({ email: '', phone: '', address: '' });
+    } catch (err: any) {
+      alert(err.message || 'Failed to generate ID');
+    } finally {
+      setIsGeneratingId(false);
+    }
+  };
+
   const inputClasses = "input-dark w-full px-4 py-3";
   const selectClasses = "input-dark w-full px-4 py-3 appearance-none";
 
@@ -141,7 +177,64 @@ export default function PublicFormClient({ form }: { form: Form }) {
           )}
           {errors.orgName && <p className="text-red-400 text-xs mt-1">{errors.orgName}</p>}
           <p className="text-xs text-dim-steel mt-1.5">Start typing to see existing organizations</p>
+          
+          {/* New User Button */}
+          <button
+            type="button"
+            onClick={() => setShowNewIdForm(!showNewIdForm)}
+            className="mt-3 flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors duration-150"
+          >
+            <Plus className="w-4 h-4" strokeWidth={2} />
+            {showNewIdForm ? 'Cancel' : 'New user? Generate Organization ID'}
+          </button>
         </div>
+
+        {/* New ID Generation Form */}
+        {showNewIdForm && (
+          <div className="mb-8 p-6 rounded-xl border border-indigo-500/20 bg-indigo-500/5 animate-crystallize">
+            <h3 className="font-display text-base font-semibold text-slate-white mb-4">Generate New Organization ID</h3>
+            <form onSubmit={handleGenerateId} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-frost-gray mb-1.5">Contact Email</label>
+                <input
+                  type="email"
+                  placeholder="contact@organization.com"
+                  value={newIdData.email}
+                  onChange={(e) => setNewIdData({...newIdData, email: e.target.value})}
+                  className="input-dark w-full px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-frost-gray mb-1.5">Phone Number</label>
+                <input
+                  type="tel"
+                  placeholder="+91 98765 43210"
+                  value={newIdData.phone}
+                  onChange={(e) => setNewIdData({...newIdData, phone: e.target.value})}
+                  className="input-dark w-full px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-frost-gray mb-1.5">Address</label>
+                <textarea
+                  placeholder="Full address"
+                  value={newIdData.address}
+                  onChange={(e) => setNewIdData({...newIdData, address: e.target.value})}
+                  rows={2}
+                  className="input-dark w-full px-3 py-2 text-sm resize-none"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isGeneratingId || !orgName.trim()}
+                className="btn-primary w-full py-2.5 text-sm disabled:opacity-50"
+              >
+                {isGeneratingId ? 'Generating...' : 'Generate ID'}
+              </button>
+              <p className="text-xs text-dim-steel italic">Your organization name will be registered and you'll receive a unique ID.</p>
+            </form>
+          </div>
+        )}
 
         {/* Mode Selector */}
         {!mode ? (

@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { Form } from '@/types/database';
-import { FileText, ArrowRight, Printer, UploadCloud, Edit3, Sparkles } from 'lucide-react';
+import { FileText, ArrowRight, Printer, UploadCloud, Edit3, Sparkles, Plus } from 'lucide-react';
 import Link from 'next/link';
 import ClientHistory from '@/components/portal/ClientHistory';
 
@@ -45,16 +45,48 @@ export default async function PortalPage() {
         <div className="bg-midnight-panel p-8 sm:p-10 relative">
           <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-indigo-500/5 blur-3xl" />
           <div className="relative">
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-slate-white tracking-tight">
-              GPRS Client Portal
-            </h1>
-            <p className="mt-3 max-w-2xl text-frost-gray leading-relaxed">
-              Welcome to the official data submission gateway for Grand Printing Reliable Solutions.
-              Securely upload institutional records for professional printing processing.
-            </p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h1 className="font-display text-3xl sm:text-4xl font-bold text-slate-white tracking-tight">
+                  GPRS Client Portal
+                </h1>
+                <p className="mt-3 max-w-2xl text-frost-gray leading-relaxed">
+                  Welcome to the official data submission gateway for Grand Printing Reliable Solutions.
+                  Securely upload institutional records for professional printing processing.
+                </p>
+              </div>
+              <Link
+                href="/f/new-org"
+                className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-primary hover:bg-indigo-600 text-white font-semibold text-sm transition-all duration-150 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
+              >
+                <Plus className="w-4 h-4" strokeWidth={2} />
+                New ID
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* New ID Card */}
+      <Link
+        href="/f/new-org"
+        className="block glass-card-elevated p-6 hover:border-indigo-500/30 transition-all duration-200 group"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/15 border border-indigo-500/10 group-hover:bg-indigo-primary group-hover:border-indigo-primary transition-all duration-200">
+              <Plus className="w-7 h-7 text-indigo-400 group-hover:text-white" strokeWidth={2} />
+            </div>
+            <div>
+              <h3 className="font-display text-lg font-bold text-slate-white group-hover:text-indigo-400 transition-colors duration-150">
+                Generate New Organization ID
+              </h3>
+              <p className="text-sm text-dim-steel mt-1">New user? Register your organization to get started</p>
+            </div>
+          </div>
+          <ArrowRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform duration-150" strokeWidth={2} />
+        </div>
+      </Link>
 
       {/* How It Works */}
       <section className="glass-card-elevated p-8">
