@@ -38,8 +38,8 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // 2. Public paths that skip auth: /login, /, and anything starting with /f/
-  const isPublicPath = pathname === '/login' || pathname === '/' || pathname.startsWith('/f/');
+  // 2. Public paths that skip auth: /login, /, anything starting with /f/, and /portal
+  const isPublicPath = pathname === '/login' || pathname === '/' || pathname.startsWith('/f/') || pathname.startsWith('/portal');
 
   // 1. If no user, redirect to /login
   if (!user && !isPublicPath) {

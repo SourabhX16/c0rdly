@@ -26,3 +26,7 @@ CREATE POLICY "Admins can manage organizations"
 CREATE POLICY "Anyone can view organizations"
   ON public.organizations FOR SELECT
   USING (true);
+
+CREATE POLICY "Anyone can create organizations"
+  ON public.organizations FOR INSERT
+  WITH CHECK (true);
