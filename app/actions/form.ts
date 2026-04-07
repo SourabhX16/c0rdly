@@ -70,7 +70,7 @@ export async function getFormByShareIdAction(shareUrlId: string) {
 }
 
 export async function submitFormResponseAction(formId: string, orgName: string, data: Record<string, any>) {
-  const limitResult = checkRateLimit('form_submit');
+  const limitResult = checkRateLimit(`form_submit:${orgName}`);
   if (!limitResult.allowed) {
     throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(limitResult.retryAfterMs / 1000)}s`);
   }
@@ -110,7 +110,7 @@ export async function getFormResponsesAction(formId: string) {
 }
 
 export async function submitBulkFormResponsesAction(formId: string, orgName: string, rows: Record<string, any>[]) {
-  const limitResult = checkRateLimit('bulk_upload');
+  const limitResult = checkRateLimit(`bulk_upload:${orgName}`);
   if (!limitResult.allowed) {
     throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(limitResult.retryAfterMs / 1000)}s`);
   }
