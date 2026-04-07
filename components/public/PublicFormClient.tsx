@@ -21,6 +21,7 @@ export default function PublicFormClient({ form }: { form: Form }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
   const orgInputRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -114,6 +115,26 @@ export default function PublicFormClient({ form }: { form: Form }) {
       alert(err.message || 'Failed to generate ID');
     } finally {
       setIsGeneratingId(false);
+    }
+  };
+
+  const handleFileUpload = async (fieldId: string, file: File) => {
+    setUploadingField(fieldId);
+    try {
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const ext = file.name.split('.').pop() || 'bin';
+      const filePath = `form-uploads/${fieldId}_${Date.now()}.${ext}`;
+      const { error } = await supabase.storage
+        .from('form-uploads')
+        .upload(filePath, file, { upsert: false });
+      if (error) throw error;
+      setFormData(prev => ({ ...prev, [fieldId]: filePath }));
+      if (errors[fieldId]) setErrors(prev => ({ ...prev, [fieldId]: '' }));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'File upload failed';
+      setErrors(prev => ({ ...prev, [fieldId]: message }));
+    } finally {
+      setUploadingField(null);
     }
   };
 
@@ -338,14 +359,20 @@ export default function PublicFormClient({ form }: { form: Form }) {
                     <input
                       type="file"
                       required={field.required}
-                      className="w-full border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm bg-white/[0.02] text-frost-gray file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 transition-all cursor-pointer"
+                      disabled={uploadingField === field.id}
+                      className="w-full border border-white/[0.06] rounded-xl px-4 py-2.5 text-sm bg-white/[0.02] text-frost-gray file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 transition-all cursor-pointer disabled:opacity-50"
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
-                          setFormData({...formData, [field.id]: e.target.files[0].name});
-                          if (errors[field.id]) setErrors({...errors, [field.id]: ''});
+                          handleFileUpload(field.id, e.target.files[0]);
                         }
                       }}
                     />
+                    {uploadingField === field.id && (
+                      <p className="text-xs text-indigo-400 mt-1">Uploading...</p>
+                    )}
+                    {formData[field.id] && typeof formData[field.id] === 'string' && formData[field.id].startsWith('form-uploads/') && (
+                      <p className="text-xs text-emerald-400 mt-1">File uploaded successfully</p>
+                    )}
                   </div>
                 )}
                 {errors[field.id] && <p className="text-red-400 text-xs mt-1">{errors[field.id]}</p>}
