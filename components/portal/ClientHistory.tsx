@@ -99,9 +99,7 @@ export default function ClientHistory({ formIds }: { formIds: string[] }) {
                         year: 'numeric',
                       })}
                       {' · '}
-                      {(sub.data as any).bulkEntries
-                        ? `${(sub.data as any).bulkEntries.length} records`
-                        : '1 record'}
+                      1 entry
                     </p>
                   </div>
                 </div>

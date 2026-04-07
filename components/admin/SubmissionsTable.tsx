@@ -447,9 +447,7 @@ export default function SubmissionsTable({
                         </div>
                       </td>
                       <td className="px-6 py-4 font-semibold text-indigo-400">
-                        {sub.data?.bulkEntries
-                          ? `${sub.data.bulkEntries.length} Records`
-                          : '1 Entry'}
+                        1 Entry
                       </td>
                       <td className="px-6 py-4 group-hover:pr-10 transition-all">
                         <div className="relative inline-flex items-center">
