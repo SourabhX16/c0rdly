@@ -49,9 +49,9 @@ export default function FormBuilder({ initialData }: FormBuilderProps) {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: { active: { id: string }; over: { id: string } | null }) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
+    if (!over || active.id === over.id) return;
       setFields((items) => {
         const oldIndex = items.findIndex((i) => i.id === active.id);
         const newIndex = items.findIndex((i) => i.id === over.id);
@@ -260,7 +260,7 @@ export default function FormBuilder({ initialData }: FormBuilderProps) {
   );
 }
 
-function SortableFieldItem({ field, onUpdate, onDelete }: { field: FormField, onUpdate: any, onDelete: any }) {
+function SortableFieldItem({ field, onUpdate, onDelete }: { field: FormField, onUpdate: (id: string, updates: Partial<FormField>) => void, onDelete: (id: string) => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: field.id });
   const style = {
     transform: CSS.Transform.toString(transform),
