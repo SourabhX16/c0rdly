@@ -2,6 +2,12 @@
 
 > Dynamic form management platform with bulk data collection, organization tracking, and admin analytics.
 
+[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://c0rdly-gray.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)](https://supabase.com)
+
+**🚀 [Live Demo](https://c0rdly-gray.vercel.app)**
+
 ## Features
 
 - **Dynamic Form Builder** — Drag-and-drop interface to create custom forms with multiple field types
@@ -54,7 +60,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000 or visit https://c0rdly.vercel.app
+Open [http://localhost:3000](http://localhost:3000)
 
 ### Create Admin User
 
@@ -112,13 +118,15 @@ c0rdly/
 
 ## Deployment
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/SourabhX16/c0rdly)
+
 ```bash
 vercel --prod
 ```
 
-Set environment variables in Vercel:
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+**Environment Variables:**
+- `NEXT_PUBLIC_SUPABASE_URL` — Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Your Supabase anon key
 
 ## License
 
