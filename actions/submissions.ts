@@ -86,13 +86,13 @@ export async function updateSubmissionStatus(id: string, status: string) {
 
 export async function deleteSubmission(id: string) {
   const supabase = await createClient();
-  await logAuditAction('submission_deleted', 'submission', id, { id });
   const { error } = await supabase
     .from('form_responses')
     .delete()
     .eq('id', id);
 
   if (error) throw new Error(error.message);
+  await logAuditAction('submission_deleted', 'submission', id, { id });
   revalidatePath('/admin/submissions');
 }
 

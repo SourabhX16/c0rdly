@@ -59,12 +59,12 @@ export async function saveForm(formData: { title: string; description: string; f
 
 export async function deleteForm(id: string) {
   const supabase = await createClient();
-  await logAuditAction('form_deleted', 'form', id, { id });
   const { error } = await supabase
     .from('forms')
     .delete()
     .eq('id', id);
 
   if (error) throw new Error(error.message);
+  await logAuditAction('form_deleted', 'form', id, { id });
   revalidatePath('/admin');
 }

@@ -79,14 +79,12 @@ export async function updateOrganization(id: string, data: {
 export async function deleteOrganization(id: string) {
   const supabase = await createClient();
 
-  await logAuditAction('org_deleted', 'organization', id, { id });
-
   const { error } = await supabase
     .from('organizations')
     .delete()
     .eq('id', id);
 
   if (error) throw new Error(error.message);
-
+  await logAuditAction('org_deleted', 'organization', id, { id });
   revalidatePath('/admin/organizations');
 }
