@@ -3,7 +3,7 @@
 > Dynamic form management platform with bulk data collection, organization tracking, and admin analytics.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-success)](https://c0rdly-gray.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)](https://supabase.com)
 
 **🚀 [Live Demo](https://c0rdly-gray.vercel.app)**
@@ -25,7 +25,7 @@
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 15 (App Router, Server Components, TypeScript) |
+| Frontend | Next.js 16 (App Router, Server Components, TypeScript) |
 | Backend | Supabase (Auth, Postgres + RLS) |
 | Styling | Tailwind CSS |
 | CSV/Excel | `papaparse`, `xlsx` |

@@ -2,7 +2,9 @@
 // GPRS – Database Type Definitions
 // ============================================================
 
-export type UserRole = 'admin';
+export type UserRole = 'admin' | 'client';
+
+export type SubmissionStatus = 'Received' | 'In Progress' | 'Done';
 
 // ---------- profiles ----------
 export interface Profile {
@@ -45,7 +47,7 @@ export interface FormResponse {
   org_name: string;
   data: Record<string, any>;
   raw_file_path: string | null;
-  status: string; // e.g., 'Received', 'In Progress', 'Done'
+  status: SubmissionStatus;
   created_at: string;
 }
 
