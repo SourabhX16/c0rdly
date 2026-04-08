@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import Papa from 'papaparse';
 import { updateSubmissionStatus, deleteSubmission } from '@/actions/submissions';
-import { Form, FormResponse } from '@/types/database';
+import { Form, FormResponse, SubmissionStatus } from '@/types/database';
 import Link from 'next/link';
 
 interface SubmissionsTableProps {
@@ -57,7 +57,7 @@ export default function SubmissionsTable({
     try {
       await updateSubmissionStatus(id, newStatus);
       setSubmissions((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, status: newStatus } : s))
+        prev.map((s) => (s.id === id ? { ...s, status: newStatus as SubmissionStatus } : s))
       );
     } catch (err) {
       console.error(err);
