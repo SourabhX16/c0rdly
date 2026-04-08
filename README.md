@@ -6,7 +6,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)](https://supabase.com)
 
-**🚀 [Live Demo](https://c0rdly-gray.vercel.app)**
+**🚀 [Live Demo](https://c0rdly.vercel.app)**
 
 ## Features
 
