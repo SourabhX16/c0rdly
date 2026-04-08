@@ -241,7 +241,7 @@ export default function SubmissionsTable({
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="input-dark w-full pl-11"
+                className="input-dark w-full !pl-11"
               />
             </div>
           </div>
@@ -254,7 +254,7 @@ export default function SubmissionsTable({
                   setOrgFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="input-dark bg-surface-800 text-slate-white w-full pl-11 appearance-none"
+                className="input-dark bg-surface-800 text-slate-white w-full !pl-11 appearance-none"
               >
                 <option value="All">All Organizations</option>
                 {orgs.map((org) => (
@@ -274,7 +274,7 @@ export default function SubmissionsTable({
                   setFormFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="input-dark bg-surface-800 text-slate-white w-full pl-11 appearance-none"
+                className="input-dark bg-surface-800 text-slate-white w-full !pl-11 appearance-none"
               >
                 <option value="All">All Form Types</option>
                 {forms.map((f) => (
@@ -294,7 +294,7 @@ export default function SubmissionsTable({
                   setStatusFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="input-dark bg-surface-800 text-slate-white w-full pl-11 appearance-none"
+                className="input-dark bg-surface-800 text-slate-white w-full !pl-11 appearance-none"
               >
                 <option value="All">All Statuses</option>
                 <option value="Received">Received</option>

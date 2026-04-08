@@ -129,7 +129,7 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="input-dark w-full pl-11"
+              className="input-dark w-full !pl-11"
             />
           </div>
           <div className="relative group">
@@ -140,7 +140,7 @@ export default function AuditTable({ initialLogs, forms }: AuditTableProps) {
                 setActionFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="input-dark w-full pl-11 appearance-none"
+              className="input-dark w-full !pl-11 appearance-none"
             >
               <option value="All">All Actions</option>
               {Object.entries(ACTION_LABELS).map(([key, label]) => (
